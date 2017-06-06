@@ -67,3 +67,23 @@ callable function that is called on the templates' render call.
 [3]: https://startbootstrap.com/template-overviews/agency/
 [4]: https://v4-alpha.getbootstrap.com/
 [5]: https://medium.com/@g1zmo/bootstrap-4-and-meteor-js-4cec073a4f6c
+
+Configuring the Domain Name
+---------------------------
+
+Following the [instructions][6] from heroku
+
+    heroku domains:add --app ertb-org ertb.org
+
+Then, configure Google DNS to point to the DNS Target `ertb.org.herokudns.com`.
+
+[6]: https://devcenter.heroku.com/articles/custom-domains
+
+### Setup SSL
+
+Heroku's [ACM][7] will automatically apply SSL certificates when you upgrade to a paid teir. Use this command
+to activate the hobby-tier (the hobby-tier costs $7/month)
+
+    heroku ps:resize web=1:Hobby
+
+[7]: https://devcenter.heroku.com/articles/automated-certificate-management
