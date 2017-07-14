@@ -1,0 +1,28 @@
+<template name="notFoundPage">
+
+    <!-- Navigation -->
+    <nav class="navbar fixed-top navbar-shrink navbar-inverse" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="{{pathFor '/'}}"><img src="img/ertb-logo.png"></a>
+        </div>
+    </nav>
+
+    <!-- Not Found -->
+    <section class="bg-faded atTop">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Not Found</h2>
+                </div>
+                <div class="offset-lg-2 col-lg-8 text-center">
+                  <p>The page you are looking for appears to have been moved, deleted or does not exist.
+                  You could go back to <a href="" onclick='history.back()'>where you were</a> or
+                  head straight to our {{#linkTo 'home'}}home page{{/linkTo}}.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{> footer}}
+
+</template>

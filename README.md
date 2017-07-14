@@ -81,9 +81,39 @@ Then, configure Google DNS to point to the DNS Target `ertb.org.herokudns.com`.
 
 ### Setup SSL
 
-Heroku's [ACM][7] will automatically apply SSL certificates when you upgrade to a paid teir. Use this command
-to activate the hobby-tier (the hobby-tier costs $7/month)
+Heroku's [ACM][7] will automatically apply SSL certificates when you upgrade to a paid teir. Enable
+the hobby-tier (the hobby-tier costs $7/month) via the Heroku dashboard, under the *resources* tab.
 
-    heroku ps:resize web=1:Hobby
+This meteor package redirects insecure connections (HTTP) to a secure URL (HTTPS).
+
+    meteor add force-ssl
 
 [7]: https://devcenter.heroku.com/articles/automated-certificate-management
+
+### Setup S3 access for file upload/download
+
+The file upload/download system is managed using (the VeliovGroup's Meteor-Files)[https://github.com/VeliovGroup/Meteor-Files] project.
+
+    meteor add ostrio:files
+    meteor npm install aws-sdk --save
+
+Instructions for setting up AWS S3 Integration [here](https://github.com/VeliovGroup/Meteor-Files/wiki/AWS-S3-Integration).
+
+    heroku config:add --app ertb-org S3='{"s3":{"key": "xxx", "secret": "xxx", "bucket": "xxx", "region": "xxx"}}'
+
+Admin Features
+--------------
+
+There are two main features that are hidden and only available to admin users:
+
+1. Review of messages submitted by the contact form on the main page.
+2. Manage files shown under the 'Administration' section of the main page.
+
+They are accessible at <http://ertb.org/admin> and require admin credentials.
+
+### Set admin credentials
+
+The credentials are set as environment variables. Set them in the heroku deployment with:
+
+    heroku config:add --app ertb-org ADMIN_USERNAME="xxx"
+    heroku config:add --app ertb-org ADMIN_PASSWORD="xxx"

@@ -1,0 +1,31 @@
+#messages .head {
+  font-weight: bold
+}
+
+#messages .msg:first-child {
+  border-top: 1px solid #ddd;
+}
+
+#messages .msg {
+  border-bottom: 1px solid #ddd;
+  padding: 5px 0;
+}
+
+#messages .msg .half-line {
+  height: 8px;
+}
+
+#messages .msg #remove {
+  color: #fff
+}
+
+#messages .msg:hover {
+  background-color: #fff
+}
+
+#messages .msg:hover #remove {
+  color: #e0878d
+}
+#messages .msg #remove:hover {
+  color: #e12b38
+}

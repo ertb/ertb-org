@@ -1,6 +1,3 @@
-import './jqBootstrapValidation'
-import './contact_me'
-
 export default function($) {
     "use strict"; // Start of use strict
 

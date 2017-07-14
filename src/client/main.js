@@ -6,14 +6,9 @@ global.Tether = tether;
 bootstrap = require('bootstrap');
 import 'jquery.easing';
 
-import agency from '../imports/ui/agency.js';
 import '../imports/ui/agency.css';
 
 import './main.html';
-
-Template.body.rendered = function() {
-  agency($);
-}
 
 /*
 Template.hello.onCreated(function helloOnCreated() {

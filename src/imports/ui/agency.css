@@ -25,6 +25,9 @@ h6 {
   font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   text-transform: uppercase; }
 
+section.atTop {
+  padding: 150px 0 100px 0; }
+
 section {
   padding: 100px 0; }
   section h2.section-heading {

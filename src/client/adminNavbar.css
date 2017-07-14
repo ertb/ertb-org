@@ -1,0 +1,4 @@
+/* don't show button outline when clicking a button that looks like a link */
+.btn-link:active {
+  outline: 0
+}
