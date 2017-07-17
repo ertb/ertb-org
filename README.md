@@ -126,3 +126,5 @@ The build version is displayed in the footer of the application. The version is 
     heroku buildpacks:add https://github.com/ianpurvis/heroku-buildpack-version -a ertb-org
 
 Which sets SOURCE_VERSION as an environment variable in the runtime environment.
+
+***Note:*** adding this buildpack made it necessary to also define a Procfile.
