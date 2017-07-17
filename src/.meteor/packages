@@ -31,4 +31,3 @@ jabbslad:basic-auth
 tmeasday:publish-counts
 force-ssl@1.0.14
 dynamic-import
-johdirr:meteor-git-rev

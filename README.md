@@ -117,3 +117,12 @@ The credentials are set as environment variables. Set them in the heroku deploym
 
     heroku config:add --app ertb-org ADMIN_USERNAME="xxx"
     heroku config:add --app ertb-org ADMIN_PASSWORD="xxx"
+
+Build Version
+-------------
+
+The build version is displayed in the footer of the application. The version is determined using a heroku buildpack per [these instructions](https://elements.heroku.com/buildpacks/ianpurvis/heroku-buildpack-version).
+
+    heroku buildpacks:add https://github.com/ianpurvis/heroku-buildpack-version -a ertb-org
+
+Which sets SOURCE_VERSION as an environment variable in the runtime environment.
