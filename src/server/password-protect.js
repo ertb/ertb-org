@@ -6,6 +6,9 @@ if (process.env.ADMIN_USERNAME) {
     username: process.env.ADMIN_USERNAME,
     password: process.env.ADMIN_PASSWORD
   }
+} else if (! Meteor.settings.adminCredentials) {
+  console.log("No admin credentials, try running\nmeteor --settings settings.json\n OR \n" +
+    "ADMIN_USERNAME='xxx' ADMIN_PASSWORD='xxx' meteor");
 }
 
 var adminAuth = new HttpBasicAuth(Meteor.settings.adminCredentials.username, Meteor.settings.adminCredentials.password);
