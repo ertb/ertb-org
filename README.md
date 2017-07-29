@@ -128,3 +128,8 @@ The build version is displayed in the footer of the application. The version is 
 Which sets SOURCE_VERSION as an environment variable in the runtime environment.
 
 ***Note:*** adding this buildpack made it necessary to also define a Procfile.
+
+Favicon
+-------
+
+The website icon was created with (this favicon generator)[https://realfavicongenerator.net].
