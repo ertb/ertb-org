@@ -1,0 +1,30 @@
+<template name="file">
+  <div class="file">
+    <div class="preview">
+      <a href="{{url}}" target="_blank"></a>
+      {{#if isImage url}}
+        <img src="{{url}}" alt="{{url}}">
+      {{else}}
+        <i class="fa fa-file-o"></i>
+      {{/if}}
+    </div>
+    <div class="input-group">
+      <span class="input-group-addon">
+        <input type="checkbox" aria-label="Checkbox for following text input">
+      </span>
+      <input type="text" class="form-control" value="{{filename}}">
+
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select Type</button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="#">Agenda</a>
+          <a class="dropdown-item" href="#">Reports</a>
+          <a class="dropdown-item" href="#">Minutes</a>
+          <a class="dropdown-item" href="#">Financials</a>
+        </div>
+      </div>
+
+      <span class="delete input-group-btn"><button class="btn btn-secondary"><i class="fa fa-times-circle"></i></button></span>
+    </div>
+  </div>
+</template>

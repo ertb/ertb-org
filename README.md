@@ -92,7 +92,11 @@ This meteor package redirects insecure connections (HTTP) to a secure URL (HTTPS
 
 ### Setup S3 access for file upload/download
 
-The file upload/download system is managed using (the VeliovGroup's Meteor-Files)[https://github.com/VeliovGroup/Meteor-Files] project.
+The file upload/download system was implemented following (these intructions)[https://themeteorchef.com/tutorials/uploading-files-to-amazon-s3] from the Meteor Chef. It relies on the `edgee:slinghot` package:
+
+    meteor add edgee:slingshot
+
+is managed using (the VeliovGroup's Meteor-Files)[https://github.com/VeliovGroup/Meteor-Files] project.
 
     meteor add ostrio:files
     meteor npm install aws-sdk --save
