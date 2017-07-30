@@ -37,6 +37,41 @@ Meteor.methods({
     } catch (e) {
       return e
     }
+  },
+
+  'files.tag': function (url, tag) {
+    check( url, String );
+    check( tag, String );
+
+    try {
+      Files.update({ url: url }, { $set: { tag: tag } });
+    } catch (e) {
+      return e
+    }
+  },
+
+  'files.rename': function (url, filename) {
+    check( url, String );
+    check( filename, String );
+
+    var s3 = knox.createClient({
+      key: s3conf.key,
+      secret: s3conf.secret,
+      region: s3conf.region,
+      bucket: s3conf.bucket
+    });
+
+    var from = url.substring(url.lastIndexOf('/'));
+    var to = '/' + filename;
+    var newUrl = url.substring(0, url.lastIndexOf('/')) + to;
+
+    try {
+      Meteor.wrapAsync(s3.copyFile, s3)(from, to);
+      Meteor.wrapAsync(s3.deleteFile, s3)(url);
+      Files.update({ url: url }, { $set: { url: newUrl }});
+    } catch (e) {
+      return e
+    }
   }
 });
 

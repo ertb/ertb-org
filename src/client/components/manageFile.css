@@ -1,0 +1,26 @@
+.manageFile {
+  margin-bottom: 5px;
+}
+
+.manageFile .input-group-addon a {
+  color: #0275d8;
+}
+
+.manageFile img {
+  height: 40px;
+}
+
+.manageFile .dropdown-menu {
+  font-family: sans-serif
+}
+
+.manageFile .dropdown-menu .selected {
+  color: white;
+  background-color: #0275d8;
+}
+
+.manageFile .added {
+  font-size: smaller;
+  font-style: italic;
+  color: #999;
+}

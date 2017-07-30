@@ -1,8 +1,7 @@
-Template.file.events({
-  'click .delete'(event, template) {
-    console.log(this);
-    Modules.client.removeFromAmazonS3({ file: this, event: event, template: template });
-  }
+import moment from 'moment';
+
+Template.file.onRendered(function() {
+  this.$('[data-toggle="tooltip"]').tooltip();
 });
 
 Template.file.helpers({

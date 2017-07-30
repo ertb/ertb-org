@@ -1,0 +1,32 @@
+<template name="manageFile">
+  <div class="manageFile">
+    <div class="input-group">
+      <span class="input-group-addon">
+        <a href="{{url}}" alt="Download" target="_blank" data-toggle="tooltip" data-placement="top" title="Download"><i class="fa fa-cloud-download"></i></a>
+      </span>
+      <input id="filename" type="text" class="form-control" value="{{filename}}">
+
+      <div class="input-group-btn">
+        {{> filetag file=this}}
+      </div>
+
+      <span class="delete input-group-btn"><button class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-times-circle"></i></button></span>
+    </div>
+    <span class="added">Added {{timeAgo added}}</span>
+  </div>
+</template>
+
+<template name="filetag">
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{selectedTag}}</button>
+  <div class="dropdown-menu">
+    {{#each tag in tags}}
+      <a class="dropdown-item {{isSelected tag.value}}" data-value="{{tag.value}}" href="#">{{tag.name}}</a>
+    {{/each}}
+<!--
+    <a class="dropdown-item {{isSelected 'agenda'}}" data-value="agenda" href="#">Agenda</a>
+    <a class="dropdown-item {{isSelected 'reports'}}" data-value="reports" href="#">Reports</a>
+    <a class="dropdown-item {{isSelected 'minutes'}}" data-value="minutes" href="#">Minutes</a>
+    <a class="dropdown-item {{isSelected 'financials'}}" data-value="financials" href="#">Financials</a>
+-->
+  </div>
+</template>

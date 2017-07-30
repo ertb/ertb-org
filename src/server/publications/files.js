@@ -1,5 +1,5 @@
 Meteor.publish( 'files', function(){
-  var data = Files.find();
+  var data = Files.find({});
 
   if ( data ) {
     return data;
