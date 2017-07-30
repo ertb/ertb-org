@@ -50,6 +50,16 @@ Meteor.methods({
     }
   },
 
+  'files.top': function (url) {
+    check( url, String );
+
+    try {
+      Files.update({ url: url }, { $set: { added: new Date()} });
+    } catch (e) {
+      return e
+    }
+  },
+
   'files.rename': function (url, filename) {
     check( url, String );
     check( filename, String );

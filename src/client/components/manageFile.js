@@ -19,6 +19,18 @@ Template.manageFile.events({
       console.log('filename: ' + filename);
       Modules.client.renameFile({ file: this, filename: filename, event: event, template: template });
     }.bind(this), 500);
+  },
+
+  'click .moveToTop'(event, template) {
+    var url = this.url;
+    Meteor.call('files.top', url, function (err, res) {
+      if (err) {
+        Bert.alert(err.message, 'warning');
+      }
+      else {
+        Bert.alert("Moved to top!", 'success');
+      }
+    });
   }
 });
 
@@ -39,6 +51,7 @@ var tags = [
   { name: 'Financials', value: 'financials' },
   { name: 'Grants', value: 'grants' },
   { name: 'RFP', value: 'rfp' },
+  { name: 'Hidden', value: 'hidden' },
 ];
 
 Template.filetag.helpers({
@@ -61,6 +74,14 @@ Template.filetag.helpers({
 Template.filetag.events({
   'click .dropdown-item'(event, template) {
     var tag = $(event.target).data('value');
-    Modules.client.setFileTag({ file: this.file, tag: tag, event: event, template: template });
+    var url = this.file.url;
+    Meteor.call('files.tag', url, tag, function (err, res) {
+      if (err) {
+        Bert.alert(err.message, 'warning');
+      }
+      else {
+        Bert.alert("Tag updated!", 'success');
+      }
+    });
   }
 });

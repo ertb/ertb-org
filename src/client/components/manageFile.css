@@ -24,3 +24,7 @@
   font-style: italic;
   color: #999;
 }
+
+.manageFile .delete button:hover {
+  color: #e12b38;
+}
