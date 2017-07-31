@@ -7,6 +7,7 @@ Template.manageFile.onRendered(function() {
 var inputTimeout;
 Template.manageFile.events({
   'click .delete'(event, template) {
+    event.preventDefault();
     $(event.target).tooltip('hide');
     Modules.client.removeFromAmazonS3({ file: this, event: event, template: template });
   },
@@ -22,6 +23,7 @@ Template.manageFile.events({
   },
 
   'click .moveToTop'(event, template) {
+    event.preventDefault();
     var url = this.url;
     Meteor.call('files.top', url, function (err, res) {
       if (err) {
@@ -73,6 +75,7 @@ Template.filetag.helpers({
 
 Template.filetag.events({
   'click .dropdown-item'(event, template) {
+    event.preventDefault();
     var tag = $(event.target).data('value');
     var url = this.file.url;
     Meteor.call('files.tag', url, tag, function (err, res) {
