@@ -76,7 +76,7 @@ Meteor.methods({
     var newUrl = url.substring(0, url.lastIndexOf('/')) + to;
 
     try {
-      Meteor.wrapAsync(s3.copyFile, s3)(from, to);
+      Meteor.wrapAsync(s3.copyFile, s3)(from, to, { 'x-amz-acl': 'public-read' });
       Meteor.wrapAsync(s3.deleteFile, s3)(url);
       Files.update({ url: url }, { $set: { url: newUrl }});
     } catch (e) {

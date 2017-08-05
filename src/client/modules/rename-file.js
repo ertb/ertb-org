@@ -1,5 +1,5 @@
 
-Modules.client.renameFile = function (options) {
+Modules.client.renameFile = function (options, next) {
   var url = options.file.url;
   var filename = options.filename;
 
@@ -10,5 +10,6 @@ Modules.client.renameFile = function (options) {
     else {
       Bert.alert("File renamed!", 'success');
     }
+    if (typeof next === 'function') next(err, res);
   });
 };

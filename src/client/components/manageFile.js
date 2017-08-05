@@ -18,8 +18,14 @@ Template.manageFile.events({
       var filename = $(event.target).val();
       console.log('this.url: ' + this.url);
       console.log('filename: ' + filename);
-      Modules.client.renameFile({ file: this, filename: filename, event: event, template: template });
-    }.bind(this), 500);
+      const target = $(event.target)
+      const caret = target.is(":focus") ? target.caret() : false;
+      target.prop('disabled', true);
+      Modules.client.renameFile({ file: this, filename: filename, event: event, template: template }, function() {
+        target.prop('disabled', false);
+        if (caret) target.caret(caret.start, caret.end);
+      });
+    }.bind(this), 1000);
   },
 
   'click .moveToTop'(event, template) {
