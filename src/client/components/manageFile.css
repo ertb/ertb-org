@@ -28,3 +28,14 @@
 .manageFile .delete button:hover {
   color: #e12b38;
 }
+
+.manageFile .alert {
+  padding: 6px 12px;
+  margin: 0px 0px;
+  font-family: sans-serif;
+}
+.manageFile .alert .close {
+  padding: 10px;
+  margin: -7px;
+  font-size: 1rem;
+}

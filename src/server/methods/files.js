@@ -11,14 +11,10 @@ Meteor.methods({
        throw Meteor.Error( "file-error", "Sorry, this file already exists!");
     }
 
-    try {
-      Files.insert({
-        url: url,
-        added: new Date() 
-      });
-    } catch (e) {
-      return e;
-    }
+    Files.insert({
+      url: url,
+      added: new Date() 
+    });
   },
 
   'files.remove': function (url) {
@@ -31,33 +27,22 @@ Meteor.methods({
       bucket: s3conf.bucket
     });
 
-    try {
-      Meteor.wrapAsync(s3.deleteFile, s3)(url);
-      Files.remove({ url: url });
-    } catch (e) {
-      return e
-    }
+    var filename = url.substring(url.lastIndexOf('/'));
+    Meteor.wrapAsync(s3.deleteFile, s3)(filename);
+    Files.remove({ url: url });
   },
 
   'files.tag': function (url, tag) {
     check( url, String );
     check( tag, String );
 
-    try {
-      Files.update({ url: url }, { $set: { tag: tag } });
-    } catch (e) {
-      return e
-    }
+    Files.update({ url: url }, { $set: { tag: tag } });
   },
 
   'files.top': function (url) {
     check( url, String );
 
-    try {
-      Files.update({ url: url }, { $set: { added: new Date()} });
-    } catch (e) {
-      return e
-    }
+    Files.update({ url: url }, { $set: { added: new Date()} });
   },
 
   'files.rename': function (url, filename) {
@@ -75,13 +60,9 @@ Meteor.methods({
     var to = '/' + filename;
     var newUrl = url.substring(0, url.lastIndexOf('/')) + to;
 
-    try {
-      Meteor.wrapAsync(s3.copyFile, s3)(from, to, { 'x-amz-acl': 'public-read' });
-      Meteor.wrapAsync(s3.deleteFile, s3)(url);
-      Files.update({ url: url }, { $set: { url: newUrl }});
-    } catch (e) {
-      return e
-    }
+    Meteor.wrapAsync(s3.copyFile, s3)(from, to, { 'x-amz-acl': 'public-read' });
+    Meteor.wrapAsync(s3.deleteFile, s3)(from);
+    Files.update({ url: url }, { $set: { url: newUrl }});
   }
 });
 

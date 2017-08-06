@@ -32,3 +32,4 @@ force-ssl@1.0.14
 dynamic-import
 edgee:slingshot
 themeteorchef:bert
+reactive-dict

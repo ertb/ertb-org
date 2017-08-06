@@ -1,25 +1,40 @@
 <template name="manageFile">
   <div class="manageFile">
-    <div class="input-group">
-      <span class="input-group-addon">
-        <a href="{{url}}" alt="Download" target="_blank" data-toggle="tooltip" data-placement="top" title="Download"><i class="fa fa-cloud-download"></i></a>
-      </span>
-
-      <span class="moveToTop input-group-btn"><button class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Move to Top"><i class="fa fa-arrow-circle-up"></i></button></span>
-
-      <input id="filename" type="text" class="form-control" value="{{filename}}">
-
-      <div class="input-group-btn">
-        {{> filetag file=this}}
-      </div>
-
-      <span class="delete input-group-btn"><button class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-times-circle"></i></button></span>
-    </div>
+    {{#if isDeleting}}
+      {{> manageFile_deleting filename=filename url=url file=this}}
+    {{else}}
+      {{> manageFile_showing filename=filename url=url file=this}}
+    {{/if}}
     <span class="added">Added {{timeAgo added}}</span>
   </div>
 </template>
 
-<template name="filetag">
+<!-- the templates _delete and _showing are used to initialize tooltips -->
+<template name="manageFile_deleting">
+  <div class="alert alert-warning"> <i class="fa fa-spinner fa-pulse fa-fw"></i> Deleting {{filename}}
+    <a href="#" class="undo-delete close" data-toggle="tooltip" data-placement="top" title="Undo"><i class="fa fa-undo"></i></a>
+  </div>
+</template>
+
+<template name="manageFile_showing">
+  <div class="input-group">
+    <span class="input-group-addon">
+      <a href="{{url}}" alt="Download" target="_blank" data-toggle="tooltip" data-placement="top" title="Download"><i class="fa fa-cloud-download"></i></a>
+    </span>
+
+    <span class="moveToTop input-group-btn"><button class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Move to Top"><i class="fa fa-arrow-circle-up"></i></button></span>
+
+    <input id="filename" type="text" class="form-control" value="{{filename}}">
+
+    <div class="input-group-btn">
+      {{> manageFile_filetag file=file}}
+    </div>
+
+    <span class="input-group-btn"><button class="delete btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-times-circle"></i></button></span>
+  </div>
+</template>
+
+<template name="manageFile_filetag">
   <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{selectedTag}}</button>
   <div class="dropdown-menu">
     {{#each tag in tags}}

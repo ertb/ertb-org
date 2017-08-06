@@ -1,14 +1,49 @@
 import moment from 'moment';
+import { ReactiveDict } from 'meteor/reactive-dict';
+
+Template.manageFile.onCreated(function() {
+  this.state = new ReactiveDict();
+});
 
 Template.manageFile.onRendered(function() {
+});
+
+Template.manageFile_showing.onRendered(function() {
   this.$('[data-toggle="tooltip"]').tooltip();
+  this.$('[data-toggle="tooltip"]').on('click', function() {
+    $(this).tooltip('hide');
+  });
+});
+
+Template.manageFile_deleting.onRendered(function() {
+  this.$('[data-toggle="tooltip"]').tooltip();
+  this.$('[data-toggle="tooltip"]').on('click', function() {
+    $(this).tooltip('hide');
+  });
+  this.$('[data-toggle="tooltip"]').tooltip('show');
 });
 
 Template.manageFile.events({
   'click .delete'(event, template) {
     event.preventDefault();
-    $(event.target).tooltip('hide');
-    Modules.client.removeFromAmazonS3({ file: this, event: event, template: template });
+
+    template.state.set('isDeleting', true);
+    template.deleteTimeout = setTimeout(function () {
+
+      Meteor.call("files.remove", this.url, ( error ) => {
+        if ( error ) {
+          Bert.alert( error.reason, "warning" );
+        } else {
+          Bert.alert( "File removed from Amazon S3!", "success" );
+        }
+      });
+    }.bind(this), 5000);
+  },
+
+  'click .undo-delete'(event, template) {
+    event.preventDefault();
+    if (template.deleteTimeout) clearTimeout(template.deleteTimeout);
+    template.state.set('isDeleting', false);
   },
 
   'input #filename'(event, template) {
@@ -43,6 +78,10 @@ Template.manageFile.events({
 });
 
 Template.manageFile.helpers({
+  isDeleting() {
+    const instance = Template.instance();
+    return instance.state.get('isDeleting');
+  },
   isImage( url ) {
     const formats = [ 'jpg', 'jpeg', 'png', 'gif' ];
     return _.find( formats, ( format ) => url.indexOf( format ) > -1 );
@@ -62,7 +101,7 @@ var tags = [
   { name: 'Hidden', value: 'hidden' },
 ];
 
-Template.filetag.helpers({
+Template.manageFile_filetag.helpers({
   isSelected( tag ) {
     if (this.file.tag === tag) return 'selected';
   },
@@ -79,7 +118,7 @@ Template.filetag.helpers({
   tags: tags
 });
 
-Template.filetag.events({
+Template.manageFile_filetag.events({
   'click .dropdown-item'(event, template) {
     event.preventDefault();
     var tag = $(event.target).data('value');
