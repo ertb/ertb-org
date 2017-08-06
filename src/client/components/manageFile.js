@@ -4,7 +4,6 @@ Template.manageFile.onRendered(function() {
   this.$('[data-toggle="tooltip"]').tooltip();
 });
 
-var inputTimeout;
 Template.manageFile.events({
   'click .delete'(event, template) {
     event.preventDefault();
@@ -13,8 +12,8 @@ Template.manageFile.events({
   },
 
   'input #filename'(event, template) {
-    if (inputTimeout) clearTimeout(inputTimeout);
-    inputTimeout = setTimeout(function () {
+    if (template.inputTimeout) clearTimeout(template.inputTimeout);
+    template.inputTimeout = setTimeout(function () {
       var filename = $(event.target).val();
       console.log('this.url: ' + this.url);
       console.log('filename: ' + filename);
@@ -22,8 +21,9 @@ Template.manageFile.events({
       const caret = target.is(":focus") ? target.caret() : false;
       target.prop('disabled', true);
       Modules.client.renameFile({ file: this, filename: filename, event: event, template: template }, function() {
+        var otherInputFocused = $('input:focus').length > 0;
         target.prop('disabled', false);
-        if (caret) target.caret(caret.start, caret.end);
+        if (caret && !otherInputFocused) target.caret(caret.start, caret.end);
       });
     }.bind(this), 1000);
   },
