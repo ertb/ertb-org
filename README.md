@@ -101,9 +101,15 @@ is managed using (the VeliovGroup's Meteor-Files)[https://github.com/VeliovGroup
     meteor add ostrio:files
     meteor npm install aws-sdk --save
 
+
 Instructions for setting up AWS S3 Integration [here](https://github.com/VeliovGroup/Meteor-Files/wiki/AWS-S3-Integration).
 
     heroku config:add --app ertb-org S3='{"s3":{"key": "xxx", "secret": "xxx", "bucket": "xxx", "region": "xxx"}}'
+
+You can find the region code for your AWS S3 bucket [here](http://docs.aws.amazon.com/general/latest/gr/rande.html).
+
+Instructions for configuring an Access Key for AWS S3 [here](https://aws.amazon.com/blogs/security/wheres-my-secret-access-key/).
+
 
 Admin Features
 --------------
