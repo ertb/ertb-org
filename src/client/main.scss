@@ -5,3 +5,8 @@
 .masthead {
   height: 100vh;
 }
+
+input.form-control::-webkit-input-placeholder { color: #aaa; }
+input.form-control:-moz-placeholder { color: #aaa; }
+input.form-control::-moz-placeholder { color: #aaa; }
+input.form-control:-ms-input-placeholder { color: #aaa; }

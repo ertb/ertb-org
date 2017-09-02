@@ -1,0 +1,45 @@
+.manageLink input#url {
+    width: 36%;
+}
+
+.manageLink {
+  margin-bottom: 5px;
+}
+
+.manageLink .input-group-addon a {
+  color: #0275d8;
+}
+
+.manageLink img {
+  height: 40px;
+}
+
+.manageLink .dropdown-menu {
+  font-family: sans-serif
+}
+
+.manageLink .dropdown-menu .selected {
+  color: white;
+  background-color: #0275d8;
+}
+
+.manageLink .added {
+  font-size: smaller;
+  font-style: italic;
+  color: #999;
+}
+
+.manageLink .delete button:hover {
+  color: #e12b38;
+}
+
+.manageLink .alert {
+  padding: 6px 12px;
+  margin: 0px 0px;
+  font-family: sans-serif;
+}
+.manageLink .alert .close {
+  padding: 10px;
+  margin: -7px;
+  font-size: 1rem;
+}

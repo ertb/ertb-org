@@ -1,0 +1,7 @@
+#newLink label {
+  font-family: sans-serif;
+}
+
+#newLink input#url {
+  width: 40%
+}

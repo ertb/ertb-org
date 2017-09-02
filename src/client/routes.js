@@ -19,6 +19,13 @@ FlowRouter.route('/admin/files', {
   }
 });
 
+FlowRouter.route('/admin/links', {
+  name: 'admin.links',
+  action: function(params, queryParams) {
+    BlazeLayout.render('appLayout', { main: 'linksPage' });
+  }
+});
+
 FlowRouter.route('/admin/messages', {
   name: 'admin.messages',
   action: function(params, queryParams) {

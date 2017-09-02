@@ -1,0 +1,16 @@
+.link .linkText {
+  width: 100%;
+  max-width: 100%;
+  text-align: left;
+  text-overflow: ellipsis;
+  overflow: auto;
+  font-family: sans-serif;
+}
+
+.link .url, .link .url:hover {
+  color: #0275d8;
+}
+
+.link {
+  margin-bottom: 5px;
+}

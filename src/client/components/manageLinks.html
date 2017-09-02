@@ -1,0 +1,9 @@
+<template name="manageLinks">
+  <div class="manageLinks">
+    {{#each links}}
+      {{> manageLink}}
+    {{else}}
+      <p class="alert alert-warning">No links added yet!</p>
+    {{/each}}
+  </div>
+</template>
