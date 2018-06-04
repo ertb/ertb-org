@@ -29,12 +29,17 @@ Meteor.methods({
 
     // need to setup amazon ses
     // MAIL_URL = smtp://USERNAME:PASSWORD@HOST:PORT
-    Email.send({
-      to: Meteor.settings.contactForm.emailTo,
-      from: data.email,
-      subject: "ertb.org Contact Form - Message From " + data.name,
-      text: text
-    });
+    try {
+      Email.send({
+        to: Meteor.settings.contactForm.emailTo,
+        from: Meteor.settings.contactForm.emailFrom || data.email,
+        subject: "ertb.org Contact Form - Message From " + data.name,
+        text: text
+      });
+    } catch (e) {
+      console.error('Email.send', e)
+      throw e
+    }
   }
 });
 

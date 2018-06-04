@@ -104,7 +104,7 @@ is managed using (the VeliovGroup's Meteor-Files)[https://github.com/VeliovGroup
 
 Instructions for setting up AWS S3 Integration [here](https://github.com/VeliovGroup/Meteor-Files/wiki/AWS-S3-Integration).
 
-    heroku config:add --app ertb-org S3='{"s3":{"key": "xxx", "secret": "xxx", "bucket": "xxx", "region": "xxx"}}'
+    heroku config:add --app ertb-org S3='{"s3":{"key":"xxx", "secret":"xxx", "bucket":"xxx", "region":"xxx"}}'
 
 You can find the region code for your AWS S3 bucket [here](http://docs.aws.amazon.com/general/latest/gr/rande.html).
 
@@ -143,3 +143,39 @@ Favicon
 -------
 
 The website icon was created with (this favicon generator)[https://realfavicongenerator.net].
+
+Contact-Form
+------------
+
+One of the features of the website is a contact form at the bottom of the home page. Contact messages are stored
+in a Mongo collection and are reviewable on the admin page accessible at <http://ertb.org/admin>.
+
+This of course requires an admin user to periodically review the messages. In order to send messages by email
+to an admin there are two configuration values that must be set.
+
+### MAIL_URL
+
+The MAIL_URL should be set to the SMTP server that sends the email. I've configured Amazon Simple Email Server
+(Amazon SES) using [these instructions](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/setting-up-email.html)
+and set the MAIL_URL to the authentication parameters for it.
+
+    heroku config:add --app ertb-org MAIL_URL=smtps://USERNAME:PASSWORD@HOST:465
+
+Note, Amazon SES is ordinarilly configured in __sandbox mode__. This puts a variety of limits on the account such
+as only being able to send to and from verified email addressess and domains. Until the website exceeds these
+limits (200
+
+[These instruction](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses-procedure.html)
+describe how to verify the to and from email addresses defined in _METEOR_SETTINGS_ (see below).
+
+### METEOR_SETTINGS
+
+Additionally, the source and destination email addresses need to be configured. These values are stored in the variable
+`Meteor.settings.contactForm` which can be set using the `METEOR_SETTINGS` environment variable.
+
+    heroku config:set --app ertb-org METEOR_SETTINGS='{"contactForm":{"emailTo":"user@domain", "emailFrom":"user@domian"}}'
+
+Ideally, the email should be sent from the mail address entered on the form, but when using the _Amazon SES sandbox_
+you can only send email from a validated address. To use the address entered on the form, leave the `emailFrom` value
+unset.
+
