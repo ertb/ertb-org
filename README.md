@@ -3,6 +3,20 @@ Electronic Recording Technology Board
 
 This is the source code for the ertb.org website.
 
+Making Updates
+--------------
+
+One can make updates to the src and preview them using meteor
+
+    cd src
+    meteor --settings settings.json
+
+Once updates are made to src files add and commit them to github
+
+    git add .
+    git commit -m "Updates made to ..."
+    git push
+
 Deployment
 ----------
 
@@ -12,8 +26,14 @@ The website is hosted on [Heroku](https://heroku.com). Deploy by pushing to the 
     git push heroku master
 
 
+How This Website Was Created
+============================
+
+The rest of this document covers how this website was created and hosted. It is meant to be useful for developing
+similar websites.
+
 Setting up a Meteor Skeleton
------------------------------
+----------------------------
 
 The website skeleton was created and deployed using the following commands (boiled down from [these][1] [articles][2])
 
