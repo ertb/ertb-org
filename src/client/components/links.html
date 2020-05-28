@@ -5,5 +5,8 @@
     {{else}}
       <p class="alert alert-warning">No links added yet!</p>
     {{/each}}
+    {{#if hasMore}}
+      <p class="small">{{more}} more in <a href="downloads">Downloads</a></p>
+    {{/if}}
   </div>
 </template>

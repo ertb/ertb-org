@@ -2,11 +2,11 @@ import moment from 'moment';
 
 const Messages = new Mongo.Collection('messages');
 
-Template.messagesPage.onCreated(function() {
+Template.adminMessagesPage.onCreated(function() {
   Meteor.subscribe('contactForm.messages');
 });
 
-Template.messagesPage.helpers({
+Template.adminMessagesPage.helpers({
   hasMessages() { return Messages.find().count() > 0; },
   messages() { return Messages.find({}, {sort: {date: -1}}); },
   archivedCount(s, multipleSuffix) {
@@ -17,11 +17,11 @@ Template.messagesPage.helpers({
   },
 });
 
-Template.messagesPage_msg.helpers({
+Template.adminMessagesPage_msg.helpers({
   localDate(d) { return moment(d).format('l LT'); },
 });
 
-Template.messagesPage_msg.events({
+Template.adminMessagesPage_msg.events({
   'click #remove'() {
     Meteor.call('contactForm.messages.archive', this._id, function (err,res) {
       if (err) {
