@@ -1,0 +1,19 @@
+<template name="members">
+  <div class="row">
+    {{#each members}}
+      <div class="{{divClasses}}">
+        <div class="team-member">
+          <h4>{{name}}</h4>
+          <p class="text-muted">
+            {{title}}
+            {{#if details}}
+              <br/>{{details}}
+            {{/if}}
+          </p>
+        </div>
+      </div>
+    {{else}}
+      <p class="alert alert-warning">No members available yet!</p>
+    {{/each}}
+  </div>
+</template>

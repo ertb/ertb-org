@@ -1,0 +1,48 @@
+<template name="manageMember">
+  <div class="manageMember">
+    {{#if isDeleting}}
+      {{> manageMember_deleting name=name title=title details=details member=this}}
+    {{else}}
+      {{> manageMember_showing name=name title=title details=details member=this}}
+    {{/if}}
+    <span class="added">Added {{timeAgo added}}</span>
+  </div>
+</template>
+
+<!-- the templates _delete and _showing are used to initialize tooltips -->
+<template name="manageMember_deleting">
+  <div class="alert alert-warning"> <i class="fa fa-spinner fa-pulse fa-fw"></i> Deleting {{name}}
+    <a href="#" class="undo-delete close" data-toggle="tooltip" data-placement="top" title="Undo"><i class="fa fa-undo"></i></a>
+  </div>
+</template>
+
+<template name="manageMember_showing">
+  <div class="input-group">
+    <span class="moveToTop input-group-btn"><button class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Move to Top"><i class="fa fa-arrow-circle-up"></i></button></span>
+
+    <input id="name" type="text" class="form-control" value="{{name}}">
+    <input id="title" type="text" class="form-control" value="{{title}}">
+    <input id="details" type="text" class="form-control" value="{{details}}">
+
+    <div class="input-group-btn">
+      {{> manageMember_membertag member=member}}
+    </div>
+
+    <span class="input-group-btn"><button class="delete btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-times-circle"></i></button></span>
+  </div>
+</template>
+
+<template name="manageMember_membertag">
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{selectedTag}}</button>
+  <div class="dropdown-menu">
+    {{#each tag in tags}}
+      <a class="dropdown-item {{isSelected tag.value}}" data-value="{{tag.value}}" href="#">{{tag.name}}</a>
+    {{/each}}
+<!--
+    <a class="dropdown-item {{isSelected 'agenda'}}" data-value="agenda" href="#">Agenda</a>
+    <a class="dropdown-item {{isSelected 'reports'}}" data-value="reports" href="#">Reports</a>
+    <a class="dropdown-item {{isSelected 'minutes'}}" data-value="minutes" href="#">Minutes</a>
+    <a class="dropdown-item {{isSelected 'financials'}}" data-value="financials" href="#">Financials</a>
+-->
+  </div>
+</template>

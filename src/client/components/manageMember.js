@@ -1,21 +1,21 @@
 import moment from 'moment';
 import { ReactiveDict } from 'meteor/reactive-dict';
 
-Template.manageLink.onCreated(function() {
+Template.manageMember.onCreated(function() {
   this.state = new ReactiveDict();
 });
 
-Template.manageLink.onRendered(function() {
+Template.manageMember.onRendered(function() {
 });
 
-Template.manageLink_showing.onRendered(function() {
+Template.manageMember_showing.onRendered(function() {
   this.$('[data-toggle="tooltip"]').tooltip();
   this.$('[data-toggle="tooltip"]').on('click', function() {
     $(this).tooltip('hide');
   });
 });
 
-Template.manageLink_deleting.onRendered(function() {
+Template.manageMember_deleting.onRendered(function() {
   this.$('[data-toggle="tooltip"]').tooltip();
   this.$('[data-toggle="tooltip"]').on('click', function() {
     $(this).tooltip('hide');
@@ -23,11 +23,11 @@ Template.manageLink_deleting.onRendered(function() {
   this.$('[data-toggle="tooltip"]').tooltip('show');
 });
 
-function editLink(template, link, url, text) {
+function editMember(template, member, name, title, details) {
 
 }
 
-Template.manageLink.events({
+Template.manageMember.events({
   'click .delete'(event, template) {
     event.preventDefault();
 
@@ -35,11 +35,11 @@ Template.manageLink.events({
     template.deleteTimeout = setTimeout(function () {
 
       console.log('template.data._id', template.data._id)
-      Meteor.call("links.remove", template.data._id, ( error ) => {
+      Meteor.call("members.remove", template.data._id, ( error ) => {
         if ( error ) {
           Bert.alert( error.reason, "warning" );
         } else {
-          Bert.alert( "Link removed!", "success" );
+          Bert.alert( "Member removed!", "success" );
         }
         template.state.set('isDeleting', false);
       });
@@ -52,23 +52,24 @@ Template.manageLink.events({
     template.state.set('isDeleting', false);
   },
 
-  'input #url, input #linkText'(event, template) {
+  'input #name, input #title, input #details'(event, template) {
     if (template.inputTimeout) clearTimeout(template.inputTimeout);
     template.inputTimeout = setTimeout(function () {
-      var url = template.$('input#url').val()
-      var linkText = template.$('input#linkText').val()
-      console.log('template: ' + template);
-      console.log('url: ' + url);
-      console.log('linkText: ' + linkText);
+      var name = template.$('input#name').val()
+      var title = template.$('input#title').val()
+      var details = template.$('input#details').val()
+      console.log('name: ' + name);
+      console.log('title: ' + title);
+      console.log('details: ' + details);
       const target = $(event.target)
       const caret = target.is(":focus") ? target.caret() : false;
       target.prop('disabled', true);
-      Meteor.call('links.edit', template.data._id, url, linkText, function (err, res) {
+      Meteor.call('members.edit', template.data._id, name, title, details, function (err, res) {
         if (err) {
           Bert.alert(err.message, 'warning');
         }
         else {
-          Bert.alert("Link updated!", 'success');
+          Bert.alert("Member updated!", 'success');
         }
         var otherInputFocused = $('input:focus').length > 0;
         target.prop('disabled', false);
@@ -79,7 +80,7 @@ Template.manageLink.events({
 
   'click .moveToTop'(event, template) {
     event.preventDefault();
-    Meteor.call('links.top', template.data._id, function (err, res) {
+    Meteor.call('members.top', template.data._id, function (err, res) {
       if (err) {
         Bert.alert(err.message, 'warning');
       }
@@ -90,31 +91,28 @@ Template.manageLink.events({
   }
 });
 
-Template.manageLink.helpers({
+Template.manageMember.helpers({
   isDeleting() {
     const instance = Template.instance();
     return instance.state.get('isDeleting');
   },
-  isImage( url ) {
-    const formats = [ 'jpg', 'jpeg', 'png', 'gif' ];
-    return _.find( formats, ( format ) => url.indexOf( format ) > -1 );
-  },
 });
 
 var tags = [
-  { name: 'Audio', value: 'audio' },
+  { name: 'Board', value: 'board' },
+  { name: 'Support', value: 'support' },
   { name: 'Hidden', value: 'hidden' },
 ];
 
-Template.manageLink_linktag.helpers({
+Template.manageMember_membertag.helpers({
   isSelected( tag ) {
-    if (this.link.tag === tag) return 'selected';
+    if (this.member.tag === tag) return 'selected';
   },
 
   selectedTag() {
-    if (this.link.tag) {
+    if (this.member.tag) {
       for (var i = 0; i < tags.length; i++) {
-        if (tags[i].value == this.link.tag) return tags[i].name;
+        if (tags[i].value == this.member.tag) return tags[i].name;
       }
     }
     return 'Select Tag';
@@ -123,11 +121,11 @@ Template.manageLink_linktag.helpers({
   tags: tags
 });
 
-Template.manageLink_linktag.events({
+Template.manageMember_membertag.events({
   'click .dropdown-item'(event, template) {
     event.preventDefault();
     var tag = $(event.target).data('value');
-    Meteor.call('links.tag', template.data.link._id, tag, function (err, res) {
+    Meteor.call('members.tag', template.data.member._id, tag, function (err, res) {
       if (err) {
         Bert.alert(err.message, 'warning');
       }

@@ -1,0 +1,7 @@
+#newMember label {
+  font-family: sans-serif;
+}
+
+#newMember input#details {
+  width: 15%
+}

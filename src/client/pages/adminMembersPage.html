@@ -1,0 +1,24 @@
+<template name="adminMembersPage">
+
+    {{> adminNavbar}}
+
+    <!-- Files -->
+    <section class="bg-faded atTop">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Members</h2>
+                </div>
+                <div class="col-lg-12">
+                  {{> newMember}}
+                </div>
+                <div class="col-lg-12">
+                  {{> manageMembers}}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{> footer}}
+
+</template>

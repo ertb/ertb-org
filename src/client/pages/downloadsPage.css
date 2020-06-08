@@ -1,0 +1,11 @@
+.static.navbar-shrink {
+    padding: 0;
+    background-color: white;
+}
+
+.static.navbar-shrink .navbar-brand img {
+    -webkit-transition: all .3s;
+    -moz-transition: all .3s;
+    transition: all .3s;
+    height: 83px;
+}

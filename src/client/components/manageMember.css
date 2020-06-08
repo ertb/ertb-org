@@ -1,0 +1,45 @@
+.managerMember input#details {
+  width: 15%;
+}
+
+.manageMember {
+  margin-bottom: 5px;
+}
+
+.manageMember .input-group-addon a {
+  color: #0275d8;
+}
+
+.manageMember img {
+  height: 40px;
+}
+
+.manageMember .dropdown-menu {
+  font-family: sans-serif
+}
+
+.manageMember .dropdown-menu .selected {
+  color: white;
+  background-color: #0275d8;
+}
+
+.manageMember .added {
+  font-size: smaller;
+  font-style: italic;
+  color: #999;
+}
+
+.manageMember .delete button:hover {
+  color: #e12b38;
+}
+
+.manageMember .alert {
+  padding: 6px 12px;
+  margin: 0px 0px;
+  font-family: sans-serif;
+}
+.manageMember .alert .close {
+  padding: 10px;
+  margin: -7px;
+  font-size: 1rem;
+}
