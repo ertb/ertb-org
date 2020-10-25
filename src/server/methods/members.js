@@ -1,3 +1,5 @@
+import { Members } from '/lib/collections'
+
 Meteor.methods({
   'members.insert': function( name, title, details) {
     check( name, String );

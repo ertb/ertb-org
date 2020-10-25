@@ -21,5 +21,5 @@ Schema.contactForm = new SimpleSchema({
     label: "Message",
     max: 1024
   }
-});
+})
 

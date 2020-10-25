@@ -1,3 +1,5 @@
+import { Links } from '/lib/collections'
+
 Meteor.methods({
   'links.insert': function( url, linkText ) {
     check( url, String );

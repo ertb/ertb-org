@@ -6,4 +6,12 @@ Bert.defaults = {
   // growl-bottom-left, growl-bottom-right.
   type: 'default'
   // Accepts: default, success, info, warning, danger.
-};
+}
+
+Bert.icons = {
+  default: 'fa fa-bell',
+  success: 'fa fa-check',
+  info: 'fa fa-info',
+  warning: 'fa fa-exclamation-triangle',
+  danger: 'fa fa-times'
+} 

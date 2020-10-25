@@ -8,7 +8,7 @@
 }
 
 .link .url, .link .url:hover {
-  color: #0275d8;
+  color: #0275d8 !important;
 }
 
 .link {

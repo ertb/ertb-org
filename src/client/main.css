@@ -1,0 +1,119 @@
+body {
+  font-family: 'Roboto Slab', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+input, button, select, optgroup, textarea {
+  font-family: sans-serif !important;
+}
+
+.btn-outline-secondary {
+  background: #fff !important;
+  color: #292b2c !important;
+  border-color: #ccc !important;
+}
+.btn-outline-secondary:hover {
+  color: #292b2c !important;
+  background-color: #e6e6e6 !important;
+  border-color: #adadad !important;
+}
+
+p a, .alert a {
+  color: #0275d8;
+}
+
+.bg-faded {
+  background-color: #f7f7f7;
+}
+
+nav.navbar-shrink {
+  box-shadow: 0 0 10px rgba(0,0,0,.25);
+}
+
+section {
+  padding: 100px 0;
+}
+
+.input-group-append > .btn:not(:first-child) {
+  z-index: 2;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.input-group-append > .btn:not(:last-child) {
+  margin-right: -1px;
+  border-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.input-group-prepend > .btn:hover,
+.input-group-append > .btn:hover {
+  z-index: 3 !important;
+}
+
+.navbarResponsive.collapse:not(.show) {
+  display: none;
+}
+
+ul.navbar-nav {
+  text-align: right;
+}
+
+@media (min-width: 768px) {
+  .navbar-shrink button.navbar-toggler {
+    display: none;
+  }
+  .navbar-shrink #navbarResponsive {
+    font-size: small;
+    float: right;
+    flex-basis: auto;
+    display: block;
+  }
+  ul.navbar-nav {
+    list-style-type: none;
+    display: block;
+  }
+  li.nav-item:last-child {
+    margin-right: 0;
+  }
+  li.nav-item:first-child {
+    margin-left: 0;
+  }
+  li.nav-item {
+    display: inline-block;
+    margin: 0 10px;
+  }
+}
+
+@media (min-width: 992px) {
+  button.navbar-toggler {
+    display: none;
+  }
+  .navbar-shrink #navbarResponsive {
+    font-size: inherit;
+  }
+  #navbarResponsive {
+    font-size: small;
+    float: right;
+    flex-basis: auto;
+    display: block;
+  }
+  li.nav-item {
+    margin: 0;
+  }
+}
+
+@media (min-width: 1200px) {
+  button.navbar-toggler {
+    display: none;
+  }
+  #navbarResponsive {
+    font-size: inherit !important;
+    float: right;
+    flex-basis: auto;
+    display: block;
+  }
+}
+
+/* don't show button outline when clicking a button that looks like a link */
+.btn-link:active {
+  outline: 0
+}

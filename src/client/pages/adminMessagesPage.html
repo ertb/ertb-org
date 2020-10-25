@@ -11,10 +11,10 @@
                 </div>
                 {{#if hasMessages}}
                 <div class="col-lg-12" id="messages">
-                  {{> messagesPage_head}}
+                  {{> adminMessagesPage_head}}
                   <div>
                     {{#each messages}}
-                      {{> messagesPage_msg}}
+                      {{> adminMessagesPage_msg}}
                     {{/each}}
                   </div>
                 </div>
@@ -35,12 +35,12 @@
 
 </template>
 
-<template name="messagesPage_head">
+<template name="adminMessagesPage_head">
   <div class="row head hidden-sm-down">
     <div class="col-11">
       <div class="row">
-        <div class="col-md-4 col-lg-3">Date</div>
-        <div class="col-md-4 col-lg-3">Email</div>
+        <div class="col-md-3 col-lg-3">Date</div>
+        <div class="col-md-5 col-lg-5">Email</div>
         <div class="col-md-3">Phone</div>
       </div>
     </div>
@@ -51,9 +51,9 @@
   <div class="row msg">
     <div class="col-11">
       <div class="row">
-        <div class="col-md-4 col-lg-3">{{localDate date}}</div>
-        <div class="col-md-4 col-lg-3">{{email}}</div>
-        <div class="col-md-3">{{phone}}<div class="half-line hidden-md-up"></div></div>
+        <div class="col-md-3 col-lg-3"><small class="text-muted">{{localDate date}}</small></div>
+        <div class="col-md-5 col-lg-5"><small>{{email}}</small></div>
+        <div class="col-md-3"><small>{{phone}}</small><div class="half-line hidden-md-up"></div></div>
         <div class="col-lg-12">{{message}}</div>
       </div>
     </div>

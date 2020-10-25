@@ -1,11 +1,11 @@
 <template name="adminNavbar">
-    <nav class="navbar fixed-top navbar-toggleable-md navbar-shrink navbar-inverse" id="mainNav">
+    <nav class="admin-navbar navbar fixed-top navbar-toggleable-md navbar-inverse" id="mainNav">
         <div class="container">
-            <a class="navbar-brand" href="{{pathFor '/'}}"><img src="{{pathFor '/'}}img/ertb-logo.png"></a>
+            <a class="navbar-brand" href="/"><img src="{{pathFor '/'}}img/ertb-logo.png"></a>
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 Menu <i class="fa fa-bars"></i>
             </button>
-            <div class="navbar-collapse" id="navbarResponsive">
+            <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{{pathFor 'admin.members'}}">Members</a>
@@ -19,11 +19,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{pathFor 'admin.messages'}}">Messages</a>
                     </li>
-<!--
-                    <li class="nav-item">
-                        <button id='signout' class="btn-link nav-link">Sign out</button>
-                    </li>
--->
                 </ul>
             </div>
         </div>

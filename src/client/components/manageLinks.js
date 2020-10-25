@@ -1,10 +1,12 @@
-Template.manageLinks.onCreated( () => Template.instance().subscribe( 'links' ) );
+import { Links } from '/lib/collections'
+
+Template.manageLinks.onCreated( () => Template.instance().subscribe( 'links' ) )
 
 Template.manageLinks.helpers({
   links() {
-    var links = Links.find({}, {sort: {added: -1}});
+    var links = Links.find({}, {sort: {added: -1}})
     if ( links ) {
-      return links;
+      return links
     }
   }
-});
+})

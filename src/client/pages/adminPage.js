@@ -1,5 +1,5 @@
 import agency from '/imports/ui/agency.js'
 
-Template.landingPage.rendered = function() {
+Template.adminPage.rendered = function() {
   agency($)
 }

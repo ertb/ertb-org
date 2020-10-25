@@ -1,9 +1,11 @@
+import { Links } from '/lib/collections'
+
 Meteor.publish( 'links', function(){
-  var data = Links.find({});
+  var data = Links.find({})
 
   if ( data ) {
-    return data;
+    return data
   }
 
-  return this.ready();
-});
+  return this.ready()
+})

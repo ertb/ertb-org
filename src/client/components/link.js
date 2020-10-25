@@ -1,5 +1,5 @@
-import moment from 'moment';
+import moment from 'moment'
 
 Template.link.onRendered(function() {
-  this.$('[data-toggle="tooltip"]').tooltip();
-});
+  this.$('[data-toggle="tooltip"]').tooltip()
+})

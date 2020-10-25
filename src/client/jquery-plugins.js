@@ -1,2 +1,2 @@
-import jcaret from 'jquery-jcaret';
-jcaret($);
+import jcaret from 'jquery-jcaret'
+jcaret($)

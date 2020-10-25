@@ -39,3 +39,8 @@
   margin: -7px;
   font-size: 1rem;
 }
+
+.manageFile .btn.download {
+  color: #0275d8 !important;
+  background: #eceeef !important;
+}

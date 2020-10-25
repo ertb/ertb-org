@@ -18,25 +18,23 @@
 
 <template name="manageLink_showing">
   <div class="input-group">
-    <span class="input-group-addon">
-      <a href="{{url}}" alt="Link" target="_blank" data-toggle="tooltip" data-placement="top" title="Link"><i class="fa fa-link"></i></a>
+    <span class="input-group-prepend">
+      <a class="download btn btn-outline-secondary" href="{{url}}" alt="Link" target="_blank" data-toggle="tooltip" data-placement="top" title="Link"><i class="fa fa-link"></i></a>
+      <button class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Move to Top"><i class="fa fa-arrow-circle-up"></i></button>
     </span>
-
-    <span class="moveToTop input-group-btn"><button class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Move to Top"><i class="fa fa-arrow-circle-up"></i></button></span>
 
     <input id="linkText" type="text" class="form-control" value="{{linkText}}">
     <input id="url" type="url" class="form-control" value="{{url}}">
 
-    <div class="input-group-btn">
+    <span class="input-group-append">
       {{> manageLink_linktag link=link}}
-    </div>
-
-    <span class="input-group-btn"><button class="delete btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-times-circle"></i></button></span>
+      <button class="delete btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-times-circle"></i></button>
+    </span>
   </div>
 </template>
 
 <template name="manageLink_linktag">
-  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{selectedTag}}</button>
+  <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{selectedTag}}</button>
   <div class="dropdown-menu">
     {{#each tag in tags}}
       <a class="dropdown-item {{isSelected tag.value}}" data-value="{{tag.value}}" href="#">{{tag.name}}</a>

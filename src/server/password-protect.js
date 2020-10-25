@@ -1,5 +1,8 @@
-//var basicAuth = new HttpBasicAuth("guest", "ertb-preview");
-//basicAuth.protect();
+import { Meteor } from 'meteor/meteor'
+import HttpBasicAuth from './http-basic-auth'
+
+//var basicAuth = new HttpBasicAuth("guest", "ertb-preview")
+//basicAuth.protect()
 
 if (process.env.ADMIN_USERNAME) {
   Meteor.settings.adminCredentials = {
@@ -8,8 +11,8 @@ if (process.env.ADMIN_USERNAME) {
   }
 } else if (! Meteor.settings.adminCredentials) {
   console.log("No admin credentials, try running\nmeteor --settings settings.json\n OR \n" +
-    "ADMIN_USERNAME='xxx' ADMIN_PASSWORD='xxx' meteor");
+    "ADMIN_USERNAME='xxx' ADMIN_PASSWORD='xxx' meteor")
 }
 
-var adminAuth = new HttpBasicAuth(Meteor.settings.adminCredentials.username, Meteor.settings.adminCredentials.password);
-adminAuth.protect(['/admin', '/admin/messages', '/admin/files']);
+var adminAuth = new HttpBasicAuth(Meteor.settings.adminCredentials.username, Meteor.settings.adminCredentials.password)
+adminAuth.protect(['/admin', '/admin/messages', '/admin/files'])

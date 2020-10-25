@@ -18,22 +18,23 @@
 
 <template name="manageMember_showing">
   <div class="input-group">
-    <span class="moveToTop input-group-btn"><button class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Move to Top"><i class="fa fa-arrow-circle-up"></i></button></span>
+    <span class="moveToTop input-group-prepend">
+      <button class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Move to Top"><i class="fa fa-arrow-circle-up"></i></button>
+    </span>
 
     <input id="name" type="text" class="form-control" value="{{name}}">
     <input id="title" type="text" class="form-control" value="{{title}}">
     <input id="details" type="text" class="form-control" value="{{details}}">
 
-    <div class="input-group-btn">
+    <span class="input-group-append">
       {{> manageMember_membertag member=member}}
-    </div>
-
-    <span class="input-group-btn"><button class="delete btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-times-circle"></i></button></span>
+      <button class="delete btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-times-circle"></i></button>
+    </span>
   </div>
 </template>
 
 <template name="manageMember_membertag">
-  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{selectedTag}}</button>
+  <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{selectedTag}}</button>
   <div class="dropdown-menu">
     {{#each tag in tags}}
       <a class="dropdown-item {{isSelected tag.value}}" data-value="{{tag.value}}" href="#">{{tag.name}}</a>

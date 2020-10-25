@@ -1,4 +1,6 @@
-import s3conf from './s3-conf';
+import s3conf from './s3-conf'
+
+import { Files } from '/lib/collections'
 
 Slingshot.fileRestrictions( "uploadToAmazonS3", {
   allowedFileTypes: [ "image/png", "image/jpeg", "image/gif",
@@ -11,7 +13,7 @@ Slingshot.fileRestrictions( "uploadToAmazonS3", {
     "application/vnd.openxmlformats-officedocument.presentationml.presentation", //.pptx
   ],
   maxSize: 10 * 1024 * 1024 // 10MB
-});
+})
 
 Slingshot.createDirective( "uploadToAmazonS3", Slingshot.S3Storage, {
   acl: "public-read",
@@ -20,11 +22,11 @@ Slingshot.createDirective( "uploadToAmazonS3", Slingshot.S3Storage, {
   AWSAccessKeyId: s3conf.key,
   AWSSecretAccessKey: s3conf.secret,
   authorize: function () {
-    let userFileCount = Files.find().count();
+    let userFileCount = Files.find().count()
     return userFileCount < 500 ? true : false; // Max of 500 files
   },
   key: function ( file ) {
-    return file.name;
+    return file.name
   }
-});
+})
 

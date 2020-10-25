@@ -43,3 +43,8 @@
   margin: -7px;
   font-size: 1rem;
 }
+
+.manageLink .btn.download {
+  color: #0275d8 !important;
+  background: #eceeef !important;
+}

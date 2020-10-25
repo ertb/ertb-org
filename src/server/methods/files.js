@@ -2,6 +2,8 @@ import s3conf from '../s3-conf'
 import knox from 'knox'
 import Future from 'fibers/future'
 
+import { Files } from '/lib/collections'
+
 Meteor.methods({
   'files.insert': function( url ) {
     check( url, String );

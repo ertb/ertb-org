@@ -8,7 +8,7 @@
 }
 
 .file .download, .file .download:hover {
-  color: #0275d8;
+  color: #0275d8 !important;
 }
 
 .file {
