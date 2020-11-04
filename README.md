@@ -25,6 +25,7 @@ The website is hosted on [Heroku](https://heroku.com). Deploy by pushing to the 
     heroku git:remote -a ertb-org
     git push heroku master
 
+The MongoDB instances is hosted on [Mongo Atlas](https://cloud.mongodb.com/).
 
 How This Website Was Created
 ============================
@@ -43,9 +44,26 @@ The website skeleton was created and deployed using the following commands (boil
     git add src
     git commit -m "create meteor skeleton"
 
+### Setup publishing to Heroku and using Mongo Atlas
+
+You'll need to get your Mongo Atlas connection string
+
+_Note: I setup my Mongo Atlas instance using a migration wizard (from mLab which was decommissioned Nov 2020). I haven't configured a sandbox instance in
+Mongo Atlas from scratch, but it doesn't look difficult. You'll need a cluster, database, and a user._
+
+1. Navigate to [Mongo Atlas](https://cloud.mongodb.com/) 
+2. select **Projects > &lt;Your Project&gt;**, to show your clusters
+3. ensure that **Clusters** is selected, then select **&lt;Your Cluster&gt; > CONNECT** to show the connection dialog
+4. select **Connect Your Application** to reveal the `mongo+srv` URL
+5. copy the `mongodb+srv` URL template, then **Close**. You'll need to get the database and password to complete the string.
+   The template should look something like this: `mongodb+srv://user-57ee3050:<password>@cluster-57ee3050.agbbj.mongodb.net/<dbname>?retryWrites=true&w=majority`
+6. select **&lt;Your Cluster&gt; > COLLECTIONS** to show the list of databases. Note the dbname to use with your app.
+7. select **SECURITY > Database Access** to list your users and their passwords. Note the password for the username in the `mongo+srv` URL.
+
+    export MONGO_URL="mongodb+srv://user-57ee3050:876d-abbca1af4de7@cluster-57ee3050.agbbj.mongodb.net/db-57ee3050?retryWrites=true&w=majority"
+
     heroku buildpacks:set --app ertb-org https://github.com/AdmitHub/meteor-buildpack-horse.git
-    heroku addons:create --app ertb-org mongolab:sandbox
-    heroku config:add --app ertb-org MONGO_URL=$(heroku config --app ertb-org | grep MONGODB_URI | awk '{print $2}')
+    heroku config:add --app ertb-org MONGO_URL="${MONGO_URL}"
     heroku config:add --app ertb-org ROOT_URL=https://ertb-org.herokuapp.com
     heroku config:add --app ertb-org METEOR_APP_DIR=src
 
@@ -60,7 +78,7 @@ Setting up Bootstrap Theme
 
 The website uses the [Start bootstrap Agency][3] theme which uses [Bootstrap 4][4].
 
-Setup Bootstrap following [this article][4]
+Setup Bootstrap following [this article][4] _Note: this may be out of date, I had to upgrade to 1.11.1 recently._
 
     meteor remove less
     meteor remove standard-minifier-css
