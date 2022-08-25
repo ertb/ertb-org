@@ -22,8 +22,8 @@ Deployment
 
 The website is hosted on [Heroku](https://heroku.com). Deploy by pushing to the _heroku_ git repository:
 
-    heroku git:remote -a ertb-org
-    git push heroku master
+    heroku git:remote -a ertb-org-heroku-20
+    git push heroku-20 master
 
 The MongoDB instances is hosted on [Mongo Atlas](https://cloud.mongodb.com/).
 
@@ -113,9 +113,24 @@ Following the [instructions][6] from heroku
 
     heroku domains:add --app ertb-org ertb.org
 
-Then, configure Google DNS to point to the DNS Target `ertb.org.herokudns.com`.
-
 [6]: https://devcenter.heroku.com/articles/custom-domains
+
+Then, configure DNS provider to point to the DNS Target returned by the command,
+for example: `polar-perch-w4tc5w8qr6m65vuyrjc89sfy.herokudns.com.`.
+
+The **ertb.org** domain is hosted at [Google Domains](https://domains.google.com/).
+Here are how the [instructions][6] from heroku break-down for configuring the **ertb.org** domain:
+
+1. Add a CNAME record:
+
+   | Host name | Type  | TTL  | Data
+   |-----------|-------|------|-----------------------------------------------------
+   | www       | CNAME | 3600 | polar-perch-w4tc5w8qr6m65vuyrjc89sfy.herokudns.com.
+
+   and,
+
+2. Configure the **ertb.org** to forward to `http://www.ertb.org`.
+
 
 ### Setup SSL
 
