@@ -1,0 +1,41 @@
+{
+  "name": "ertb-server",
+  "version": "2.0.0",
+  "description": "A server to support ertb.org",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "nodemon --files",
+    "preview": "node dist/index.js",
+    "lint": "eslint src/index.ts",
+    "test": "jest --watch --verbose"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.540.0",
+    "@aws-sdk/lib-storage": "^3.540.0",
+    "busboy": "^1.6.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.15.2",
+    "jose": "^5.2.3",
+    "jwks-rsa": "^3.1.0",
+    "mongodb": "^6.4.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/busboy": "^1.5.3",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^20.11.25",
+    "@typescript-eslint/eslint-plugin": "^7.1.1",
+    "@typescript-eslint/parser": "^7.1.1",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.0",
+    "tape": "^5.7.4",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.4.2"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "scripts": {
+    "install-client": "cd client && npm install",
+    "install-server": "cd server && npm install",
+    "postinstall": "npm run install-client && npm run install-server",
+    "dev-client": "cd client && npm run dev",
+    "dev-server": "cd server && npm run dev",
+    "dev": "concurrently -k -n \"SRV,CLI\" -c \"blue,magenta\" \"npm run dev-server\" \"npm run dev-client\"",
+    "build-client": "cd client && npm build",
+    "build-server": "cd server && npm build",
+    "build": "npm run build-client && npm run build-client",
+    "test-client": "cd client && npm test",
+    "test-server": "cd server && npm test",
+    "test": "npm run test-client && npm run test-client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.1",
+    "wait-on": "^7.0.1"
+  }
+}
