@@ -62,11 +62,15 @@ uploading and downloading from our current MongoDb and S3 instances.
 
 ## Developer Notes
 
-In order to test Google OAuth using localhost, edit /etc/host (use `sudo vi /etc/host`) and add this line:
+### Configuring Google OAuth for local development
 
-```
-127.0.0.1	ertb.org
-```
+In order to test Google OAuth using localhost you need to add both `http://localhost;3000`
+_and_ `http://localhost` to the list of Authorized Origins for the Client ID
+in [Google API Console > Credentials][1]
+
+[1]: https://console.cloud.google.com/apis/credentials?project=ertb-org
+
+### Local S3 and Db
 
 Run a local S3 server (Minio) and MongoDB:
 

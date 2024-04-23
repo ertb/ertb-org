@@ -48,15 +48,17 @@ export const getSigningKey = async (options?:GetSigningKeyOptions) => {
 
 export const signToken = async (payload:JWTPayload) => {
   const signingKey = await getSigningKey()
+  const expirationTime = secs(process.env.JWT_EXPIRATION_TIME || '1 day')
+  const expires = Math.trunc(Date.now()/1000) + expirationTime
   const jwt = new SignJWT(payload)
   .setProtectedHeader({alg: 'RS256'})
   .setIssuedAt()
-  .setExpirationTime(process.env.JWT_EXPIRATION_TIME || '1 day')
+  .setExpirationTime(expirationTime)
 
   if (process.env.JWT_ISSUER) jwt.setIssuer(process.env.JWT_ISSUER)
   if (process.env.JWT_AUDIENCE) jwt.setIssuer(process.env.JWT_AUDIENCE)
 
-  return await jwt.sign(signingKey)
+  return {token: await jwt.sign(signingKey), expires}
 }
 
 export const verifyToken = async <T extends JWTPayload> (jwt:string) => {

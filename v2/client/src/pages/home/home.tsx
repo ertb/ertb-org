@@ -1,7 +1,5 @@
 export const HomePage = () => {
-  return (
-    <>
-      Welcome to the Home Page
-    </>
-  )
+  return (<main>
+    <h1>Welcome to the Home Page</h1>
+  </main>)
 }

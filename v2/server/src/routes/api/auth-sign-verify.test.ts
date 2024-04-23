@@ -2,24 +2,24 @@ import { getSigningKey, signToken, verifyToken } from './auth-sign-verify'
 
 describe('auth-sign-verify', ()=>{
   it('should sign and verify', async ()=> {
-    const jwt = await signToken({id:1234})
-    const result = await verifyToken(jwt)
+    const {token} = await signToken({id:1234})
+    const result = await verifyToken(token)
     expect(result).not.toBeUndefined()
   })
 
   it('should verify using previous key', async ()=> {
-    const jwt = await signToken({id:1234})
+    const {token} = await signToken({id:1234})
     getSigningKey({forceRotate:true}) // force key rotation
-    const result = await verifyToken(jwt)
+    const result = await verifyToken(token)
     expect(result).not.toBeUndefined()
   })
 
   it('should not verify using an old key', async ()=> {
-    const jwt = await signToken({id:1234})
+    const {token} = await signToken({id:1234})
     await getSigningKey({forceRotate:true}) // force key rotation
     await getSigningKey({forceRotate:true}) // rotate again so original key is old
     hideConsoleError(async ()=>{
-      const result = await verifyToken(jwt)
+      const result = await verifyToken(token)
       expect(result).toBeUndefined()
     })
   })

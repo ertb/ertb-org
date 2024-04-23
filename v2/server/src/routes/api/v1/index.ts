@@ -1,9 +1,9 @@
 import { Router } from 'express'
 import { files } from './files'
-import { userinfo } from './userinfo'
+import { userprofile } from './userprofile'
 
 const router = Router()
 router.use('/files', files)
-router.use('/userinfo', userinfo)
+router.use('/userprofile', userprofile)
 
 export const v1 = router

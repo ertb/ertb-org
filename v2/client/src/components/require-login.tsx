@@ -4,7 +4,7 @@ import { SignInWithGoogleButton } from './sign-in-with-google-button'
 import { Alert, AlertDescription, AlertTitle } from './ui/alert'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { Button } from './ui/button'
-import { useUserProfile } from '@/contexts/user-profile-context'
+import { useUserProfile } from '@/contexts/user-login-context'
 
 interface Props {
   role?: string

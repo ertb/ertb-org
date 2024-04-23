@@ -5,6 +5,8 @@ import { checkUser } from '../check-user'
 import { DeleteObjectCommand, GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 
 const router = Router()
+export const files = router
+
 router.use(withDb)
 
 const getS3Client = () => {
@@ -162,5 +164,3 @@ router.post(':filepath(.*)', checkUser('admin'), async (req:Request, res:Respons
   const insertRes = await files.insertOne({url, tag, added: new Date()})
   res.send({ _id: insertRes.insertedId, url, tag })
 })
-
-export const files = router
