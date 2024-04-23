@@ -5,7 +5,8 @@
     "start": "meteor run --settings settings.json",
     "test": "meteor test --once --driver-package meteortesting:mocha",
     "test-app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
-    "visualize": "meteor --production --extra-packages bundle-visualizer"
+    "visualize": "meteor --production --extra-packages bundle-visualizer",
+    "lint": "eslint '**/*.js' --ignore-pattern node_modules/"
   },
   "dependencies": {
     "@babel/runtime": "^7.11.2",
@@ -19,5 +20,9 @@
     "moment": "^2.29.4",
     "popper.js": "^1.16.1",
     "tether": "^1.4.7"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0"
   }
 }
