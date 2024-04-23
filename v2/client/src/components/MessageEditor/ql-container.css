@@ -1,0 +1,43 @@
+.ql-container > *
+{
+  color: rgb(36, 36, 36);
+  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+}
+.ql-container h1,
+.ql-container h2,
+.ql-container h3 {
+  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  font-weight: 500;
+}
+.ql-container h1 { font-size: 2em; }
+.ql-container h2 { font-size: 1.5em; }
+.ql-container h3 { font-size: 1.17em; }
+.ql-container strong,
+.ql-container strong > * {
+  font-weight: bold;
+}
+.ql-container em {
+  font-style: italic;
+}
+
+.ql-snow .ql-editor blockquote,
+.ql-container blockquote {
+  border-left: 0.25em solid #ccc;
+  padding-left: 1em;
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
+  padding-bottom: 0.5em;
+  padding-top: 0.5em;
+}
+.ql-snow .ql-editor blockquote + blockquote,
+.ql-container blockquote + blockquote {
+  margin-top: 0;
+  padding-top: 0;
+}
+.ql-snow .ql-editor blockquote:has(+ blockquote),
+.ql-container blockquote:has(+ blockquote) {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
