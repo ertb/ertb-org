@@ -1,4 +1,6 @@
-import ReactQuill from 'react-quill'
+//import ReactQuill from 'react-quill'
+import ReactQuill from './stub/react-quill'
+
 import 'react-quill/dist/quill.snow.css'
 import './quill-bootstrap.css'
 import './ql-container.css'

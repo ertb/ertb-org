@@ -5,30 +5,37 @@ import { Alert, AlertDescription, AlertTitle } from './ui/alert'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { Button } from './ui/button'
 import { useUserProfile } from '@/contexts/user-login-context'
+import { Skeleton } from './ui/skeleton'
 
 interface Props {
-  role?: string
+  withRole?: string
   children: ReactNode
 }
 
 const clientId = import.meta.env.CLIENT_ID
 
-export const RequireLogin = ({role='', children}:Props) => {
-  const { login, profile, logout } = useUserProfile()
+export const RequireLogin = ({withRole='', children}:Props) => {
+  const { profile, logout, loading } = useUserProfile()
   const hasRole = (role:string) => profile && (!role || role == profile.role)
 
   return (
     <GoogleOAuthProvider clientId={clientId}>
-      {hasRole(role) ? children : (
+      {hasRole(withRole) ? children : (
         <div className='flex items-center justify-center h-screen dark:bg-gray-800'>
-          {!profile ? <SignInWithGoogleButton onClick={login}/> : (
-            <Alert variant="destructive">
+          {!profile ? loading ? <Skeleton/> : <SignInWithGoogleButton/> : (
+            <Alert variant="destructive" className='w-auto pb-2'>
               <ExclamationTriangleIcon className="h-4 w-4" />
-              <AlertTitle>Access Denied</AlertTitle>
-              <AlertDescription className='flex justify-between items-start'>
-                You do not have permission to view this page.
-                <Button onClick={logout}>Ok</Button>
-              </AlertDescription>
+              <div className='flex gap-4 flex-wrap'>
+                <div>
+                  <AlertTitle className='text-left'>Access Denied</AlertTitle>
+                  <AlertDescription className='text-left'>
+                    You do not have permission to view this page.
+                  </AlertDescription>
+                </div>
+                <div>
+                  <Button variant='destructive' onClick={logout}>Logout</Button>
+                </div>
+              </div>
             </Alert>
           )}
         </div>

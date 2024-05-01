@@ -1,9 +1,8 @@
-import { SignInWithGoogleButton } from "@/components/sign-in-with-google-button"
-import { Button } from "@/components/ui/button"
 import { fetchJSON } from "@/lib/fetch-json"
 import { GoogleOAuthProvider, TokenResponse, googleLogout, useGoogleLogin } from "@react-oauth/google"
 import { ReactNode, createContext, useContext, useEffect, useState } from "react"
 import { toast } from "sonner"
+import { useSessionStorage } from "usehooks-ts"
 
 type Credentials = Omit<TokenResponse, 'error' | 'error_description' | 'error_uri'>
 
@@ -27,15 +26,17 @@ interface Profile {
 
 interface Context {
   profile: Profile|undefined
-  LoginButton: ()=>ReactNode
+  login: ()=>void
   logout: ()=>void
   fetchJSON: typeof fetchJSON
+  loading: boolean
 }
 const UserLoginContext = createContext({
   profile: undefined,
-  LoginButton: ()=><Button onClick={()=>toast('Sign in not available')}>Sign in</Button>,
-  logout: ()=>toast('Logout not available'),
+  login: ()=>toast('Login not implemented'),
+  logout: ()=>toast('Logout not implemented'),
   fetchJSON,
+  loading: false
 } as Context)
 
 const fetchUserProfile = (creds:Credentials, setProfile:(profile:Profile)=>void) => {
@@ -56,8 +57,9 @@ interface Props {
   children: ReactNode
 }
 const Inner = ({children}:Props) => {
-  const [creds, setCreds] = useState<Credentials>()
+  const [creds, setCreds] = useSessionStorage<Credentials|undefined>('creds', undefined)
   const [profile, setProfile] = useState<Profile>()
+  const [loading, setLoading] = useState(false)
 
   const logout = () => {
     setCreds(undefined)
@@ -76,13 +78,12 @@ const Inner = ({children}:Props) => {
     }
   })
 
-  const LoginButton = () => profile ? undefined : 
-    <SignInWithGoogleButton onClick={login}/>
-
   useEffect(()=>{
     if (creds) {
+      setLoading(true)
       fetchUserProfile(creds, setProfile)
       .catch(err=>toast.error(err))
+      .finally(()=>setLoading(false))
     }
   }, [creds])
 
@@ -93,8 +94,10 @@ const Inner = ({children}:Props) => {
       const tillExp = profile.expires ? profile.expires * 1000 - Date.now() : fiveMinutes
       if (tillExp <= 0) console.warn('Authorization has bad expiration')
       const to = tillExp <= 0 ? undefined : setTimeout(()=>{
+        setLoading(true)
         fetchUserProfile(creds, setProfile)
         .catch(err=>toast.error(err))
+        .finally(()=>setLoading(false))
       }, tillExp)
       return ()=>clearTimeout(to)
     }
@@ -105,7 +108,7 @@ const Inner = ({children}:Props) => {
     return fetchJSON(input, {...init, headers})
   }
 
-  const value:Context = { profile, LoginButton, logout, fetchJSON: withAuth }
+  const value:Context = { profile, login, logout, fetchJSON: withAuth, loading }
   return (
     <UserLoginContext.Provider value={value}>{children}</UserLoginContext.Provider>
   )

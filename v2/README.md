@@ -62,15 +62,29 @@ uploading and downloading from our current MongoDb and S3 instances.
 
 ## Developer Notes
 
+### Quick-start
+
+Once you've configured your Google OAuthg 2.0 Client ID using [Google API Console > Credentials][1], you can run a local instance:
+
+    echo VITE_GOOGLE_API_CLIENT_ID=<your-google-api-client-id> > client/.env
+    cp server/.env-example server/.env
+
+and in new windows:
+
+- `docker compose up`
+- `npm run dev`
+
+Then, visit [http://localhost:3000](http://localhost:3000)
+
 ### Configuring Google OAuth for local development
 
 In order to test Google OAuth using localhost you need to add both `http://localhost;3000`
 _and_ `http://localhost` to the list of Authorized Origins for the Client ID
 in [Google API Console > Credentials][1]
 
-[1]: https://console.cloud.google.com/apis/credentials?project=ertb-org
+[1]: https://console.cloud.google.com/apis/credentials
 
-### Local S3 and Db
+### Running local S3 and MongoDb instances
 
 Run a local S3 server (Minio) and MongoDB:
 

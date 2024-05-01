@@ -1,12 +1,16 @@
+import { RequireLogin } from "@/components/require-login"
+import { Button } from "@/components/ui/button"
 import { useUserProfile } from "@/contexts/user-login-context"
 
 export const AdminPage = () => {
-  const {profile, LoginButton} = useUserProfile()
+  const {logout} = useUserProfile()
 
-  return (<main>
-    <LoginButton/>
-
-    <h1>Welcome to the Admin Page</h1>
-    <pre className='text-left'>{JSON.stringify(profile,null,2)}</pre>
-  </main>)
+  return (
+    <RequireLogin withRole='admin'>
+      <main>
+        <h1>Welcome to the Admin Page</h1>
+        <Button onClick={logout}>Logout</Button>
+      </main>
+    </RequireLogin>
+  )
 }

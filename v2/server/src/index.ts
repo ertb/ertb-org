@@ -1,11 +1,12 @@
-import express, { Request, Response, NextFunction } from 'express'
 import dotenv from 'dotenv'
+dotenv.config()
+
+import express, { Request, Response, NextFunction } from 'express'
 import morgan from 'morgan'
 import { v1 } from './routes/api/v1'
 import { signingKeyRotation } from './routes/api/auth-sign-verify'
 import { sendUnexpctedError as unexpectedError } from './lib/unexpected-err-res'
 
-dotenv.config()
 signingKeyRotation(process.env.JWKS_ROTATION_TIME)
 
 const app = express()

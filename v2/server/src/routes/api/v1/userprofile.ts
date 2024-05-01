@@ -24,12 +24,14 @@ interface User {
   _id: ObjectId
   role: string
   userinfo: UserInfo
+  lastLogin: Date
 }
 
 const updateOrCreateUser = async (db:Db, userinfo:UserInfo, insertRole:string, isAdminEmail:true|undefined) => {
-  const found = await db.collection('users').findOneAndUpdate({userinfo:{email: userinfo.email}}, {"$set":{userinfo}}, {returnDocument:'after'})
+  const lastLogin = new Date()
+  const found = await db.collection('users').findOneAndUpdate({'userinfo.email': userinfo.email}, {"$set":{userinfo, lastLogin}}, {returnDocument:'after'})
   if (found) return found as User
-  const newUser = await db.collection('users').insertOne({role:insertRole, userinfo, isAdminEmail})
+  const newUser = await db.collection('users').insertOne({role:insertRole, userinfo, isAdminEmail, lastLogin})
   return {role:insertRole, userinfo, _id: newUser.insertedId} as User
 }
 
@@ -40,7 +42,6 @@ router.get('/', withDb, async (req:Request, res:Response) => {
     res.status(401).send({err: 'authorization not provided'})
     return
   }
-  console.log('authorization', authorization)
 
   const headers = {
     Authorization: authorization,
@@ -53,10 +54,8 @@ router.get('/', withDb, async (req:Request, res:Response) => {
   }
 
   // validate access_token from google
-  console.log('access_token', access_token)
   fetchJSON<UserInfo>(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${access_token}`, {headers})
   .then(async (userinfo) => {
-    console.log('google userinfo', userinfo)
     let fallbackRole = 'user'
     if (adminEmails.indexOf(userinfo.email.toLowerCase()) >= 0) {
       // set role upon first sign-in (setting in db.users overrides this)
@@ -73,8 +72,7 @@ router.get('/', withDb, async (req:Request, res:Response) => {
     res.send({...user, authorization: `Bearer ${token}`, expires})
   })
   .catch((err:unknown)=>{
-    console.log('err', err)
-    console.error('Could not authenticate user')
+    console.error('Could not authenticate user', err)
     res.status(401).send('Could not authenticate user')
   })
 })
