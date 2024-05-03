@@ -1,0 +1,91 @@
+:root {
+  --ertb-blue-ring: #268ac0;
+  --ertb-blue-text: #1f6898;
+}
+header .title, nav {
+  text-transform: uppercase;
+  padding-top: 0.5rem; /* for vertical alignment */
+  font-family: Montserrat, Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+footer {
+  text-transform: uppercase;
+  font-family: Montserrat, Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+section {
+  font-family: "Roboto Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1.05rem;
+}
+section button,
+section form {
+  font-family: Montserrat, Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+section.dark {
+  color: white;
+}
+
+h2 {
+  font-size: 2.25rem;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+h3 {
+  font-size: 1.75rem;
+}
+h1, h2, h3, h4 {
+  color: #2c353d;
+  font-weight: 700;
+  font-family: Montserrat, Helvetica Neue, Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+}
+.dark h1, .dark h2, .dark h3, .dark h4 {
+  color: white;
+}
+
+section p,
+section ul,
+section ol {
+  margin-bottom: 0.75rem;
+}
+section li {
+  margin-bottom: 0.25rem;
+}
+
+section ul {
+  margin-left: 2rem;
+  list-style-type: decimal;
+  margin-bottom: rem;
+}
+section ol {
+  margin-left: 2rem;
+  list-style-type: disc;
+}
+nav a,
+section a {
+  color: var(--ertb-blue-text);
+  margin: 0 -2px;
+  padding: 0 2px;
+}
+nav button {
+  margin: -2px;
+  padding: 2px;
+}
+section a:hover {
+  text-decoration: underline;
+}
+
+button:focus-visible,
+a:focus-visible {
+  	/* inner indicator */
+	outline: 2px var(--ertb-blue-ring) solid;
+  outline-offset: 1px;
+	/* outer indicator */
+	box-shadow: 0 0 0 4px var(--ertb-blue-ring);
+  border-radius: 2px;
+}
+
+.dark input,
+.dark textarea {
+  background: #00000033;
+}

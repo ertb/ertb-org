@@ -1,21 +1,19 @@
-import './App.css'
 import { Toaster } from 'sonner'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { HomePage } from './pages/home/home'
 import { AdminPage } from './pages/admin/admin'
-import { UserLoginProvider } from './contexts/user-login-context'
+import { DownloadsPage } from './pages/downloads/downloads'
 
 function App() {
   return (
     <>
-    <UserLoginProvider>
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<HomePage/>}/>
+          <Route path='/downloads' element={<DownloadsPage/>}/>
           <Route path='/admin' element={<AdminPage/>}/>
         </Routes>
       </BrowserRouter>
-    </UserLoginProvider>
     <Toaster/>
     </>
   )

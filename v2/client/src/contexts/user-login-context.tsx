@@ -4,7 +4,9 @@ import { ReactNode, createContext, useContext, useEffect, useState } from "react
 import { toast } from "sonner"
 import { useSessionStorage } from "usehooks-ts"
 
-type Credentials = Omit<TokenResponse, 'error' | 'error_description' | 'error_uri'>
+interface Credentials extends Omit<TokenResponse, 'error' | 'error_description' | 'error_uri'> {
+  expires?: number
+}
 
 interface UserInfo {
   id: string
@@ -57,12 +59,13 @@ interface Props {
   children: ReactNode
 }
 const Inner = ({children}:Props) => {
-  const [creds, setCreds] = useSessionStorage<Credentials|undefined>('creds', undefined)
+  const [creds, setCreds, removeCreds] = useSessionStorage<Credentials|undefined>('creds', undefined)
+
   const [profile, setProfile] = useState<Profile>()
   const [loading, setLoading] = useState(false)
 
   const logout = () => {
-    setCreds(undefined)
+    removeCreds()
     setProfile(undefined)
     googleLogout()
   }
@@ -70,7 +73,7 @@ const Inner = ({children}:Props) => {
   const login = useGoogleLogin({
     onSuccess:(creds)=>{
       console.log('creds', creds)
-      setCreds(creds)
+      setCreds({...creds, expires: Date.now() + (creds.expires_in * 1000)})
     },
     onError:(err)=>{
       console.log('err', err)
@@ -80,12 +83,16 @@ const Inner = ({children}:Props) => {
 
   useEffect(()=>{
     if (creds) {
+      if ((creds.expires || 0) < Date.now()) {
+        removeCreds()
+        return
+      }
       setLoading(true)
       fetchUserProfile(creds, setProfile)
       .catch(err=>toast.error(err))
       .finally(()=>setLoading(false))
     }
-  }, [creds])
+  }, [creds, removeCreds])
 
   useEffect(()=>{
     // refresh user profile upon expiration

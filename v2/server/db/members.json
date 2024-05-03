@@ -1,0 +1,100 @@
+[{
+  "_id": "jatBFan8pfsqRQRM9",
+  "name": "Chris Beall",
+  "title": "ERTB Treasurer",
+  "details": "Senior Programs Director, Colorado Secretary of State Representing Secretary of State",
+  "added": {
+    "$date": "2020-06-08T01:46:53.312Z"
+  },
+  "tag": "board"
+},
+{
+  "_id": "4MADj6qnNBuudA8s4",
+  "name": "Molly Fitzpatrick",
+  "title": "Boulder County Clerk",
+  "details": "Representing County Clerk & Recorders",
+  "added": {
+    "$date": "2020-06-08T01:45:46.283Z"
+  },
+  "tag": "board"
+},
+{
+  "_id": "o3wmaBfQhtvfFx6EZ",
+  "name": "Bob Howe",
+  "title": "Title Company of the Rockies",
+  "details": "Representing Title Industry",
+  "added": {
+    "$date": "2020-06-08T01:46:14.234Z"
+  },
+  "tag": "board"
+},
+{
+  "_id": "WJqqMQoLBXxQJkxuz",
+  "name": "Lloyd Booth",
+  "title": "ERTB Vice Chair",
+  "details": "Representing Mortgage Lending Industry",
+  "added": {
+    "$date": "2020-06-08T01:47:06.749Z"
+  },
+  "tag": "board"
+},
+{
+  "_id": "s3NuL4HW48y2APJJm",
+  "name": "Susan Corliss",
+  "title": "ERTB Chair",
+  "details": "Kit Carson County Clerk and Recorder, Representing County Clerk & Recorders",
+  "added": {
+    "$date": "2020-06-08T01:47:26.139Z"
+  },
+  "tag": "board"
+},
+{
+  "_id": "xdK7AHEey4NqAAiG6",
+  "name": "Michelle Batey",
+  "title": "ERTB Executive Director",
+  "details": "",
+  "added": {
+    "$date": "2020-06-08T01:45:11.696Z"
+  },
+  "tag": "support"
+},
+{
+  "_id": "BKMLoZEkFsEhLJoMr",
+  "name": "Trish Gilbert",
+  "title": "Saguache County Clerk and Recorder",
+  "details": "Representing County Clerk & Recorders",
+  "added": {
+    "$date": "2020-06-08T01:46:40.113Z"
+  },
+  "tag": "board"
+},
+{
+  "_id": "zZn7LfwY28DhC7869",
+  "name": "Charles Calvin",
+  "title": "Calvin Law Firm",
+  "details": "Representing Colorado Bar Association",
+  "added": {
+    "$date": "2020-06-08T01:46:27.229Z"
+  },
+  "tag": "board"
+},
+{
+  "_id": "qffgjKR78EWppwDWu",
+  "name": "Steve Schleiker",
+  "title": "El Paso County Clerk and Recorder",
+  "details": "Representing County Clerk & Recorders",
+  "added": {
+    "$date": "2020-06-08T01:46:00.707Z"
+  },
+  "tag": "board"
+},
+{
+  "_id": "TPwDLJ5horsPNEwfC",
+  "name": "Amanda Gonzalez",
+  "title": "Jefferson County Clerk and Recorder",
+  "details": "Representing County Clerk & Recorders",
+  "added": {
+    "$date": "2020-06-08T01:45:28.559Z"
+  },
+  "tag": "board"
+}]

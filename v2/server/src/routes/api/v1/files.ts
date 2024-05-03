@@ -35,21 +35,22 @@ const getBucket = () => {
 /** list all files in the collection */
 router.get('/', async (req: Request, res: Response) => {
   const defaultLimit = 25
-  const {tag, limitStr=defaultLimit.toString()} = req.query
+  const {tag, limit:limitStr=defaultLimit.toString()} = req.query
+  console.log('req.query', req.query)
+  console.log({tag, limitStr})
 
   let limit = parseInt(limitStr.toString())
   if (isNaN(limit) || limit < 0) limit = defaultLimit
 
   const files = req.db.collection('files')
   const query = tag ? {tag} : {}
-  res.send(await files.find(query).sort({added:-1}).limit(limit).toArray())
-})
+  let find = files.find(query).sort({added:-1})
+  if (limit > 0) find = find.limit(limit)
 
-/** list of available tags */
-router.get('/tags', async (req: Request, res: Response) => {
-  const files = req.db.collection('files')
-  const tags = await files.distinct('tag')
-  res.send(tags)
+  res.send({
+    count: await files.find(query).count(),
+    files: await find.toArray()
+  })
 })
 
 /** stream a video from S3 */

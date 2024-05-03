@@ -15,15 +15,15 @@ export const sendEmail = async (from:string, to:string, subject:string, html:str
   }
 
   const smtpUrl = new URL(process.env.SMTP_URL || '')
-  if (['smtp', 'smtps'].indexOf(smtpUrl.protocol) < 0) {
+  if (['smtp:', 'smtps:'].indexOf(smtpUrl.protocol) < 0) {
     throw new Error('Protocol in SMTP_URL is invalid. Expecting "smtps" or "smtp".')
   }
 
   // create reusable transporter object using the default SMTP transport
   const transporter = nodemailer.createTransport({
-    host: smtpUrl.host,
-    port: parseInt(smtpUrl.port || '0') || 465,
-    secure: parseInt(process.env.SMTP_PORT || '0') === 465,
+    host: smtpUrl.hostname,
+    port: parseInt(smtpUrl.port || smtpUrl.protocol == 'smtps:' ? '465' : '25'),
+    secure: (smtpUrl.protocol == 'smtps:') || smtpUrl.port === '465',
     auth: {
       user: smtpUrl.username,
       pass: smtpUrl.password,
