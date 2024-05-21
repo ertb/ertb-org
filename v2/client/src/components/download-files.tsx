@@ -3,15 +3,7 @@ import { DownloadLink } from "../pages/home/download-link"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ReactNode, useState } from "react"
-
-interface File {
-  url: string
-  tag: string
-}
-interface FilesResponse {
-  count: number
-  files: File[]
-}
+import { FilesResponse } from "@/lib/api-schema"
 
 interface Props {
   tag: string

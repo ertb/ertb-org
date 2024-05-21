@@ -21,7 +21,7 @@ export const RequireLogin = ({withRole='', children}:Props) => {
   return (
     <GoogleOAuthProvider clientId={clientId}>
       {hasRole(withRole) ? children : (
-        <div className='flex items-center justify-center h-screen dark:bg-gray-800'>
+        <div className='mt-auto flex items-center justify-center dark:bg-gray-800'>
           {!profile ? loading ? <Skeleton/> : <SignInWithGoogleButton/> : (
             <Alert variant="destructive" className='w-auto pb-2'>
               <ExclamationTriangleIcon className="h-4 w-4" />
