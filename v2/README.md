@@ -1,77 +1,60 @@
+Electronic Recording Technology Board
+=====================================
 
-----
+This is the source code for the [ertb.org](https://ertb.org) website.
 
-New version of ertb.org
+## Developer Quick-start
 
-- primary objective is to add accessiblity framework that will add a11y.js to the linter to adhere to WCAG 2.2 recommendations.
+### Prerequisites
 
-## Features
+1. [Node.js](https://nodejs.org/) needs to be installed
+2. A docker environment needs to be available. I recommend [Rancher Desktop](https://rancherdesktop.io/).
+3. Google Oath 2.0 Client ID using [Google API Console > Credentials][1]
+4. Amazon Simple Email Server (Amazon SES) using [these instructions][2]
 
-- public facing features:
-  - present background/vision/mission/goals/objectives
-  - download Senate Bills
-  - show board members + support
-  - download notice/agenda, minutes, reports, financials, audio, grants rfp
-  - contact us form w/ email forwarding
+[1]: https://console.cloud.google.com/apis/credentials
+[2]: https://docs.aws.amazon.com/ses/latest/DeveloperGuide/setting-up-email.html
 
-- admin features
-  - login - would be nice to move to OAuth for "sign-in with google"
-  - edit members/support
-  - files upload/delete/reorder
-  - audio links 
-  - messages
+The **Google API credentials** are required for authenticating admin users. It's a bit
+difficult to get around this if you need to work on the admin pages.
 
-  - [nice to have] modify content: background/vision/mission/goals/objectives
-  - [nice to have] modify content: download Senate Bills
+The **Amazon Simple Email Server** is required for _emailing_ the content-us messages. If this
+is not setup the messages are still stored in the Mongo Database.
 
-- bug fixes:
-  - some of the audio links are bad (start with file://)
-  - don't allow shareing a file:// link!
+Everything else can be mimic'd using local docker images.
 
+### Configuring the environment
 
-## Architecture
+```sh
+git clone git@github.com:ertb/ertb-org.git
+cd ertb-org
+npm install
+```
 
-### Frontend
+Then, setup the environment variable files
 
-The previous version was used Meteor+JQuery+S3+Mongo+Heroku. Unfortunately the need to add
-accessibility auditing means that JQuery is not going to be useful.
+```
+cp client/.env-example client/.env
+cp server/.env-example server/.env
+```
 
-Since react has some well-regarded approaces, such as axe-core/react and eslint-plugin-jsx-a11y,
-and I'm most comfortable with React at this point, React will be a good way to go for the front-end.
+And update the following lines (the rest are match the local development)
 
-- axe-core/react will log problems to the browser console
-- eslint-plugins-jsx-a11y will report problems in the IDE (I use VSCode) and upon `npm run lint`.
+**client/.env**
+```sh
+VITE_GOOGLE_API_CLIENT_ID=<your-google-api-client-id>
+```
 
-### Backend
+**server/.env**
+```sh
+ADMIN_EMAILS=<a-comma-separated-list-to-start>
+SMTP_URL=smtps://<user>:<pass>@<host>:465
+CONTACT_EMAIL=<where-to-send-contact-us-messages>
+```
 
-Unfortunately, Meteor has been stuck on Node v14 a while. There are plans this year to move it to
-Node v20, but that will not be available in the short term.
+### Starting up the development servers
 
-I'm planning on implementing a Node server using express as descibed in the Heroku docs here:
-https://devcenter.heroku.com/articles/getting-started-with-nodejs
-
-I'm very familiar with Node and express. The part that will be new to me is the web-sockets integration,
-but I think that is an optional feature since there is only one administrator and updates don't _have_
-to be immediate. I'll skip that feature for the initial move from JQuery/Meteor to React/Node.
-
-Additionally we need to support uploading and downloading of documents to and from S3, as well as
-recording them in MongoDb.
-
-There are Node clients for both MongoDb and S3 available. I'll likely be implementing an API for
-uploading and downloading from our current MongoDb and S3 instances.
-
-## Developer Notes
-
-### Quick-start
-
-Once you've configured your Google OAuthg 2.0 Client ID using [Google API Console > Credentials][1], you can run a local instance:
-
-    echo VITE_GOOGLE_API_CLIENT_ID=<your-google-api-client-id> > client/.env
-    cp server/.env-example server/.env
-
-then, add your google authenticated email address (usually **@google.com**) to `ADMIN_EMAILS=` in **jkserver/.env**
-
-and in separate terminal windows:
+In separate terminal windows:
 
 - `docker compose up`
 - `npm run dev`
@@ -83,15 +66,3 @@ Then, visit [http://localhost:3000](http://localhost:3000)
 In order to test Google OAuth using localhost you need to add both `http://localhost;3000`
 _and_ `http://localhost` to the list of Authorized Origins for the Client ID
 in [Google API Console > Credentials][1]
-
-[1]: https://console.cloud.google.com/apis/credentials
-
-### Running local S3 and MongoDb instances
-
-Run a local S3 server (Minio) and MongoDB:
-
-```
-docker compose up
-```
-
-The credentials in _server/.env-example_ match the _docker-compose.yaml_ and _mongo-init.js_ files.
