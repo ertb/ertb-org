@@ -1,18 +1,9 @@
-import { useFetch } from "@/hooks/use-fetch"
+import { useGet } from "@/lib/rest-client/use-get"
 import './board-members.css'
+import { MembersResponse } from "@/lib/api-schema"
 
-interface Member {
-  name: string
-  title: string
-  details: string
-  tag: string
-}
-interface MemberResponse {
-  count: number
-  members: Member[]
-}
 export const BoardMembers = () => {
-  const {data} = useFetch<MemberResponse>(`/api/v1/members`)
+  const {data} = useGet<MembersResponse>(`/api/v1/members`)
   const board = data?.members.filter(m=>m.tag == 'board')
   const support = data?.members.filter(m=>m.tag == 'support')
 

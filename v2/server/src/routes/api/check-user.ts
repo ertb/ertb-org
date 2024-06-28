@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express"
-import { withDb } from "./with-db"
+import { withDb } from "../../lib/mongo-rest-route/with-db"
 import { verifyToken } from "./auth-sign-verify"
 import { JWTPayload } from "jose"
 import { ObjectId } from "mongodb"
@@ -10,34 +10,40 @@ interface HasUserId extends JWTPayload {
   userId: string
 }
 
-/** middleware to ensure a valid authentication token (from /api/v1/userinfo) is provided */
+/** middleware to ensure a valid authorization token (from /api/v1/userinfo) is provided */
 export const checkUser = (role?:string) => async (req: Request, res: Response, next: NextFunction) => {
   if (!req.db) withDb(req, res)
 
   if (!req.headers.authorization) {
-    res.status(401).send({err: 'Authentication not provided'})
+    res.status(401).send({error: 'Authorization not provided'})
     return
   }
 
   const [authScheme, jwt] = req.headers.authorization.split(' ')
   if (authScheme.toLowerCase() != 'bearer') {
-    res.status(401).send({err: `Unknown authentication scheme: ${authScheme}`})
+    console.warn(`Unknown authorization scheme: ${authScheme}`)
+    res.status(401).send({error: `Unknown authorization scheme: ${authScheme}`})
     return
   }
-  const payload = await verifyToken<HasUserId>(jwt)
-  if (!payload) {
-    res.status(401).send({err: 'Could not verify bearer token'})
+  let payload:HasUserId
+  try {
+    payload = await verifyToken<HasUserId>(jwt)
+  } catch (e) {
+    console.debug(e)
+    res.status(401).send({error: 'Could not verify bearer token. User should sign in again.'})
     return
   }
 
-  const user = await req.db.collection('auth').findOne(new ObjectId(payload.userId))
+  const user = await req.db.collection('users').findOne(new ObjectId(payload.userId))
   if (!user) {
-    res.status(401).send({err: 'Could not verify user'})
+    console.warn('Could not verify user')
+    res.status(401).send({error: 'Could not verify user'})
     return
   }
 
   if (user.role != role) {
-    res.status(403).send({err: 'User is not authorized'})
+    console.warn('User is not authorized')
+    res.status(403).send({error: 'User is not authorized'})
   }
   next()
 }

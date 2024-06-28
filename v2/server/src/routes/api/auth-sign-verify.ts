@@ -3,6 +3,9 @@ import { FlattenedJWSInput, GenerateKeyPairResult, JWK, JWSHeaderParameters, JWT
 
 type JWKSFunction = (protectedHeader?: JWSHeaderParameters | undefined, token?: FlattenedJWSInput | undefined) => Promise<KeyLike>
 
+export class NoSigningKeyError extends Error {
+}
+
 interface Secret {
   jwks?:JWKSFunction
   keyPair?: GenerateKeyPairResult<KeyLike>
@@ -48,17 +51,18 @@ export const getSigningKey = async (options?:GetSigningKeyOptions) => {
 
 export const signToken = async (payload:JWTPayload) => {
   const signingKey = await getSigningKey()
-  const expirationTime = secs(process.env.JWT_EXPIRATION_TIME || '1 day')
-  const expires = Math.trunc(Date.now()/1000) + expirationTime
+  const expiresIn = secs(process.env.JWT_EXPIRATION_TIME || '1 day')
+  const expiriationTime = Math.trunc(Date.now()/1000) + expiresIn
   const jwt = new SignJWT(payload)
   .setProtectedHeader({alg: 'RS256'})
   .setIssuedAt()
-  .setExpirationTime(expirationTime)
+  .setExpirationTime(expiriationTime)
 
   if (process.env.JWT_ISSUER) jwt.setIssuer(process.env.JWT_ISSUER)
   if (process.env.JWT_AUDIENCE) jwt.setIssuer(process.env.JWT_AUDIENCE)
 
-  return {token: await jwt.sign(signingKey), expires}
+  const token = await jwt.sign(signingKey)
+  return {token, expires: expiriationTime}
 }
 
 export const verifyToken = async <T extends JWTPayload> (jwt:string) => {
@@ -66,27 +70,27 @@ export const verifyToken = async <T extends JWTPayload> (jwt:string) => {
     issuer: process.env.JWT_ISSUER || undefined,
     audience: process.env.JWT_AUDIENCE || undefined,
   }
-  if (!secret.jwks) return undefined
+  if (!secret.jwks) {
+    throw new Error('No signing key. User needs to login in again.')
+  }
 
   const result = await jwtVerify(jwt, secret.jwks, options)
-  .catch(async (error) => {
-    if (error?.code === 'ERR_JWKS_MULTIPLE_MATCHING_KEYS') {
-      for await (const publicKey of error) {
+  .catch(async (e) => {
+    if (e?.code === 'ERR_JWKS_MULTIPLE_MATCHING_KEYS') {
+      // multiple matches -- go through the list
+      for await (const publicKey of e) {
         try {
-          return await jwtVerify(jwt, publicKey, options)
+          await jwtVerify(jwt, publicKey, options)
         } catch (innerError) {
           if (innerError?.code === 'ERR_JWS_SIGNATURE_VERIFICATION_FAILED') {
-            continue
+            continue // continue to the next key
           }
-          console.error(innerError)
-          return undefined
+          throw innerError
         }
       }
-      console.error("JWS signature verification failed")
-      return undefined
+      throw new Error('JWS signature verification failed')
     }
-    console.error(error)
-    return undefined
+    throw e
   })
-  return result?.payload as T
+  return result.payload as T
 }

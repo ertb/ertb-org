@@ -1,6 +1,7 @@
 :root {
   --ertb-blue-ring: #268ac0;
   --ertb-blue-text: #1f6898;
+  --ring: 201, 67%, 45%;
 }
 header .title, nav {
   text-transform: uppercase;
@@ -9,6 +10,10 @@ header .title, nav {
 }
 nav a.active {
   font-weight: 600;
+}
+nav a:hover:not(.active) {
+  /* text-shadow emboldens w/o shifting text around it */
+  text-shadow:0px 0px 1px var(--);
 }
 
 footer {
@@ -21,6 +26,7 @@ section {
   font-size: 1.05rem;
 }
 section button,
+section input,
 section form {
   font-family: Montserrat, Helvetica Neue, Helvetica, Arial, sans-serif;
 }
@@ -82,10 +88,10 @@ section a:hover {
 button:focus-visible,
 a:focus-visible {
   	/* inner indicator */
-	outline: 2px var(--ertb-blue-ring) solid;
+	outline: 1px hsl(var(--ring)) solid;
   outline-offset: 1px;
 	/* outer indicator */
-	box-shadow: 0 0 0 4px var(--ertb-blue-ring);
+	box-shadow: 0 0 0 1px hsl(var(--ring));
   border-radius: 2px;
 }
 

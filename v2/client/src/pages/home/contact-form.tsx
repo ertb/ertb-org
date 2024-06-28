@@ -6,8 +6,8 @@ import { z } from 'zod'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
-import { postJSON } from "@/lib/fetch-json"
 import { useState } from "react"
+import { restClient } from '@/lib/rest-client/rest-client'
 
 interface FormData {
   name: string
@@ -45,7 +45,7 @@ export const ContactForm = () => {
 
   const onSubmit = (data: FormData) => {
     setSending(true)
-    postJSON('/api/v1/messages', data)
+    restClient.post('/api/v1/messages', data)
     .then(()=>{
       toast.success('Message sent')
       form.setValue("message", "")

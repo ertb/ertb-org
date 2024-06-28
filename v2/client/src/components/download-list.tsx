@@ -1,7 +1,7 @@
-import { useFetch } from "@/hooks/use-fetch"
 import { Skeleton } from "./ui/skeleton"
 import { toast } from "sonner"
 import { DownloadIcon } from "@radix-ui/react-icons"
+import { useGet } from "@/lib/rest-client/use-get"
 
 interface File {
   _id: string,   // example: '9n5esnco9gEsL7GxZ'
@@ -29,8 +29,8 @@ interface Props {
   limit?: number
 }
 export const DownloadList = ({tag, limit}:Props) => {
-  const {loading, data=[]} = useFetch<File[]>(`/api/files?tag=${tag}&limit=${limit}`, {
-    errorHandler: e=>toast(e.toString())
+  const {loading, data=[]} = useGet<File[]>(`/api/files?tag=${tag}&limit=${limit}`, {
+    errorHandler: (e:Error)=>toast(e.toString())
   })
 
   return (<>

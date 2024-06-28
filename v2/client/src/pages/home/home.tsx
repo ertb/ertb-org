@@ -15,10 +15,11 @@ export const HomePage = () => {
     'Contact': 'contact',
   }
   return (<>
-    <NavHeader links={navLinks} hero/>
-    <div className="h-96 md:h-[550px] w-full bg-[url('/img/ian-baldwin-82170.jpg')] bg-cover bg-center">
-
-    </div>
+    <NavHeader links={navLinks} hero>
+      <div className="h-96 md:h-[550px] w-full bg-[url('/img/ian-baldwin-82170.jpg')] bg-cover bg-center">
+        {/** cover image */}
+      </div>
+    </NavHeader>
     <main className="text-slate-600">
       <h1 className='sr-only'>Electronic Recording Technology Board</h1>
 

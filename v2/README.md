@@ -69,7 +69,9 @@ Once you've configured your Google OAuthg 2.0 Client ID using [Google API Consol
     echo VITE_GOOGLE_API_CLIENT_ID=<your-google-api-client-id> > client/.env
     cp server/.env-example server/.env
 
-and in new windows:
+then, add your google authenticated email address (usually **@google.com**) to `ADMIN_EMAILS=` in **jkserver/.env**
+
+and in separate terminal windows:
 
 - `docker compose up`
 - `npm run dev`

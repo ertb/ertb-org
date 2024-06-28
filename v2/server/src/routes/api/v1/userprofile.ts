@@ -1,13 +1,10 @@
-import { Request, Response, Router } from 'express'
-import { withDb } from '../with-db'
+import { Request, Response } from 'express'
+import { withDb } from '../../../lib/mongo-rest-route/with-db'
 import { signToken } from '../auth-sign-verify'
 import { Db, ObjectId } from 'mongodb'
 import { fetchJSON } from '@/lib/fetch-json'
 
 const adminEmails = process.env.ADMIN_EMAILS?.split(',').map(e=>e.trim().toLowerCase()) || []
-
-const router = Router()
-export const userprofile = router
 
 // expected response from googleapis.com/oauth2/v1/userinfo
 interface UserInfo {
@@ -35,11 +32,13 @@ const updateOrCreateUser = async (db:Db, userinfo:UserInfo, insertRole:string, i
   return {role:insertRole, userinfo, _id: newUser.insertedId} as User
 }
 
-router.get('/', withDb, async (req:Request, res:Response) => {
+export const userprofile = async (req:Request, res:Response) => {
+  if (!req.db) await new Promise((resolve)=>withDb(req, res, resolve))
+
   let isAdminEmail:true|undefined = undefined
   const {authorization} = req.headers
   if (!authorization) {
-    res.status(401).send({err: 'authorization not provided'})
+    res.status(401).send({error: 'Authorization not provided'})
     return
   }
 
@@ -49,7 +48,7 @@ router.get('/', withDb, async (req:Request, res:Response) => {
 
   const [scheme, access_token] = authorization.split(' ')
   if (scheme.toLowerCase() != 'bearer') {
-    res.status(401).send({err: `Unknown authorization scheme: ${scheme}`})
+    res.status(401).send({error: `Unknown authorization scheme: ${scheme}`})
     return
   }
 
@@ -65,14 +64,14 @@ router.get('/', withDb, async (req:Request, res:Response) => {
     const user = await updateOrCreateUser(req.db, userinfo, fallbackRole, isAdminEmail)
     if (!user) {
       console.error('Could not find or create user')
-      res.status(500).send({err: 'Could not find or create user'})
+      res.status(500).send({error: 'Could not find or create user'})
       return
     }
     const {token, expires} = await signToken({userId: user?._id})
     res.send({...user, authorization: `Bearer ${token}`, expires})
   })
-  .catch((err:unknown)=>{
-    console.error('Could not authenticate user', err)
+  .catch((e:unknown)=>{
+    console.error('Could not authenticate user', e)
     res.status(401).send('Could not authenticate user')
   })
-})
+}

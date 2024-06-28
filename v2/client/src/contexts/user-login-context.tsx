@@ -1,4 +1,3 @@
-import { fetchJSON } from "@/lib/fetch-json"
 import { GoogleOAuthProvider, TokenResponse, googleLogout, useGoogleLogin } from "@react-oauth/google"
 import { ReactNode, createContext, useContext, useEffect, useState } from "react"
 import { toast } from "sonner"
@@ -30,15 +29,13 @@ interface Context {
   profile: Profile|undefined
   login: ()=>void
   logout: ()=>void
-  fetchJSON: typeof fetchJSON
   loading: boolean
 }
 const UserLoginContext = createContext({
   profile: undefined,
   login: ()=>toast('Login not implemented'),
   logout: ()=>toast('Logout not implemented'),
-  fetchJSON,
-  loading: false
+  loading: false,
 } as Context)
 
 const fetchUserProfile = (creds:Credentials, setProfile:(profile:Profile)=>void) => {
@@ -110,12 +107,7 @@ const Inner = ({children}:Props) => {
     }
   }, [creds, profile])
 
-  const withAuth:(typeof fetchJSON) = (input, init) => {
-    const headers = {...init?.headers, authorization: profile?.authorization } as HeadersInit
-    return fetchJSON(input, {...init, headers})
-  }
-
-  const value:Context = { profile, login, logout, fetchJSON: withAuth, loading }
+  const value:Context = { profile, login, logout, loading }
   return (
     <UserLoginContext.Provider value={value}>{children}</UserLoginContext.Provider>
   )

@@ -1,6 +1,7 @@
 import { AppFooter } from "@/components/app-footer"
 import { NavHeader } from "@/components/nav-header"
 import { RequireLogin } from "@/components/require-login"
+import { AuthRestClientProvider } from "@/contexts/auth-rest-client-context"
 import { UserLoginProvider, useUserProfile } from "@/contexts/user-login-context"
 import { Outlet } from "react-router-dom"
 
@@ -9,23 +10,24 @@ const Inner = () => {
   const links = profile  && profile.role == 'admin' ? {
     "Files": '/admin/files',
     "Members": '/admin/members',
-    "Messages": '/admin/messages'
+    "Messages": '/admin/messages',
+    "Users": '/admin/users',
   } : undefined
 
-  return (<>
+  return (<div className="min-h-screen flex flex-col bg-slate-200">
     <NavHeader title="Site Admin" links={links} logout={profile ? logout : undefined}/>
-    <div className="flex flex-col min-h-screen">
-    <RequireLogin withRole='admin'>
-      <main className="download-page pt-20">
-        <h1 className="sr-only">Downloads</h1>
-        <section id="admin" className="w-full px-8 py-16 lg:px-32">
-          <Outlet/>
-        </section>
-      </main>
-    </RequireLogin>
+    <main className="flex-auto flex flex-col">
+      <h1 className="sr-only">Site Administration</h1>
+      <RequireLogin withRole='admin'>
+        <AuthRestClientProvider>
+          <section id="admin" className="w-full px-8 py-4 lg:px-32">
+            <Outlet/>
+          </section>
+        </AuthRestClientProvider>
+      </RequireLogin>
+    </main>
     <AppFooter/>
-    </div>
-   </>)
+   </div>)
 }
 
 export const AdminPage = () => {

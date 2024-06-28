@@ -1,22 +1,25 @@
 import { UseScrollPosition } from "@/hooks/use-scroll-position"
 import { cn } from "@/lib/utils"
 import { HamburgerMenuIcon } from "@radix-ui/react-icons"
-import { useRef, useState } from "react"
+import { ReactNode, useRef, useState } from "react"
 import { NavLink } from "react-router-dom"
 import { Link, animateScroll as scroll } from "react-scroll"
 import { useOnClickOutside } from "usehooks-ts"
 import { Button } from "./ui/button"
+import { useOnScreen } from "@/hooks/use-on-screen"
 
 interface Props {
   links?: {[key:string]:string}
   title?: string
   hero?: boolean
   logout?: ()=>void
+  children?: ReactNode
 }
-export const NavHeader = ({links, title, hero, logout}:Props) => {
+export const NavHeader = ({links, title, hero, logout, children}:Props) => {
   title = links ? undefined : title
   let atTop = (UseScrollPosition() <= 100)
   atTop = (!hero || title) ? false : atTop
+  const currentSection = useOnScreen('section', 32)
   const [showMenu, _setShowMenu] = useState(false)
   const [menuHidden, _setMenuHidden] = useState(true)
   const setShowMenu = (showMenu:boolean)=>{
@@ -31,10 +34,10 @@ export const NavHeader = ({links, title, hero, logout}:Props) => {
   const ref = useRef(null)
   useOnClickOutside(ref, ()=>setShowMenu(false))
 
-  return (
-    <header className={cn("fixed z-10 w-full flex gap-4 justify-between items-center px-8 md:px-12 py-6", atTop ? 'bg-[#ffffffcc]' :  'bg-white drop-shadow-md')}>
-      <NavLink className="shrink-0" to="/" onClick={()=>scroll.scrollToTop()}>
-        <img alt="Electronic Recording Technology Board" src="/img/ertb-logo.svg" className={cn('transition-all', atTop ? 'h-20 lg:h-28' : 'h-14')}/>
+  return (<header>
+    <div className={cn("fixed z-10 w-full flex gap-4 justify-between items-center px-8 md:px-12 py-6", atTop ? 'bg-[#ffffffcc]' :  'bg-white drop-shadow-md')}>
+      <NavLink className="shrink-0 -m-1" to="/" onClick={()=>scroll.scrollToTop()}>
+        <img alt="Electronic Recording Technology Board" src="/img/ertb-logo.svg" className={cn('p-1 transition-all', atTop ? 'h-20 lg:h-28' : 'h-14')}/>
       </NavLink>
       {title ? <span className="title">{title}</span> : undefined}
       {links ? <nav className='text-[#1f6998] text-right' ref={ref}>
@@ -46,12 +49,13 @@ export const NavHeader = ({links, title, hero, logout}:Props) => {
             if (id.startsWith('/')) {
               return <li key={label}><NavLink className="cursor-pointer" to={id} onClick={()=>setShowMenu(false)}>{label}</NavLink></li>
             } else {
-              return <li key={label}><Link offset={-104} smooth className="cursor-pointer" to={id} onClick={()=>setShowMenu(false)}>{label}</Link></li>
+              return <li key={label}><Link href={`#${id}`} offset={-104} smooth className={cn("cursor-pointer", {active: currentSection == id})} to={id} onClick={()=>setShowMenu(false)}>{label}</Link></li>
             }
           })}
           <li>{logout ? <Button className='text-xs' onClick={logout}>Logout</Button> : undefined}</li>
         </ul>
       </nav> : undefined }
-    </header>
-  )
+    </div>
+    <div className="min-h-24">{children}</div>
+  </header>)
 }

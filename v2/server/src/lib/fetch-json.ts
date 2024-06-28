@@ -13,13 +13,12 @@ class ResponseError extends Error {
  * interface Profile {email:string, name:string}
  * fetchJSON<Profile>('/api/v1/userprofile')
  * .then(profile=>setProfile(profile))
- * .catch(err=>console.log(err))
+ * .catch(e=>console.error(e))
  * 
  * @throws ResponseError that with full response as `res` if !res.ok
  */
 export const fetchJSON = <T>(input: string | URL | Request, init?: RequestInit | undefined) => {
   const headers = {...init?.headers, 'accept': 'application/json'}
-  console.log({init, headers})
   return fetch(input, {...init, headers})
   .then(res=>{
     if (!res.ok) throw new ResponseError(`${res.status} ${res.statusText}`, res)

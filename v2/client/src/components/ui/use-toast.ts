@@ -140,7 +140,8 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
-function toast({ ...props }: Toast) {
+function toast(props: Toast | React.ReactNode) {
+  props = React.isValidElement(props) ? {description: props} : props as Toast
   const id = genId()
 
   const update = (props: ToasterToast) =>
@@ -167,6 +168,19 @@ function toast({ ...props }: Toast) {
     dismiss,
     update,
   }
+}
+
+type ToastElement = string | (string & React.ReactElement<any, string | React.JSXElementConstructor<any>>) | (string & Iterable<React.ReactNode>) | (string & React.ReactPortal)
+toast.error = (title:ToastElement, description?:ToastElement) => {
+  toast({title, description, variant: 'destructive'})
+}
+
+toast.warn = (title:ToastElement, description?:ToastElement) => {
+  toast({title, description, variant: 'warning'})
+}
+
+toast.success = (title:ToastElement, description?:ToastElement) => {
+  toast({title, description, variant: 'success'})
 }
 
 function useToast() {

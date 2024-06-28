@@ -1,4 +1,4 @@
-import { useFetch } from "@/hooks/use-fetch"
+import { useGet } from "@/lib/rest-client/use-get"
 import { DownloadLink } from "../pages/home/download-link"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -14,7 +14,7 @@ interface Props {
 }
 export const DownloadFiles = ({title, tag, limit=12, full, all}:Props) => {
   const [showAll, setShowAll]= useState(false)
-  const {data} = useFetch<FilesResponse>(`/api/v1/files?tag=${tag}&limit=${showAll ? 0 : limit}`)
+  const {data} = useGet<FilesResponse>(`/api/v1/files?tag=${tag}&limit=${showAll ? 0 : limit}`)
   const count = data?.count || 0
 
   return (<>

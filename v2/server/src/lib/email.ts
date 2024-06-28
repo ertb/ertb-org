@@ -1,13 +1,15 @@
 import nodemailer from 'nodemailer'
 
 /**
+ * Sends an email message using the SMTP server specified in SMTP_URL
  * @param {string} from 
  * @param {string|string[]} to 
  * @param {string} subject 
- * @param {string} html 
+ * @param {string} message
+ * @param {boolean} html // indicates message is HTML
  * @throws error if cannot send email via smpt server
  */
-export const sendEmail = async (from:string, to:string, subject:string, html:string) => {
+export const sendEmail = (from:string, to:string, subject:string, message:string, html: boolean=false) => {
   if (Array.isArray(to)) to = to.join(', ')
 
   if (!process.env.SMTP_URL) {
@@ -31,10 +33,11 @@ export const sendEmail = async (from:string, to:string, subject:string, html:str
   })
 
   // send mail with defined transport object
-  await transporter.sendMail({
+  return transporter.sendMail({
     from, // sender address
     bcc: process.env.SMTP_TEST_RECIPIENTS || to, // list of receivers
     subject, // Subject line
-    html, // html body
+    text: !html ? message : undefined,
+    html: html ? message : undefined,
   })
 }

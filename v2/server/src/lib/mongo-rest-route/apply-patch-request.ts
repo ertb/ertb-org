@@ -1,0 +1,86 @@
+import { ValidationError } from "./validation-error"
+import jsonPatchSchema from './json-patch-schema.json'
+import Ajv from './ajv-with-formats'
+import { ObjectId } from "mongodb"
+import { Request } from "express"
+import { applyPatch } from 'fast-json-patch'
+
+const ajv = new Ajv()
+const validatePatchSchema = ajv.compile(jsonPatchSchema)
+
+interface PatchTarget { [key:string]: any, _id: ObjectId }
+
+const getPatchTarget = (o:PatchTarget, keys:string|string[]):PatchTarget|undefined => {
+  if (o === undefined) return undefined
+  if (!Array.isArray(keys)) {
+    keys = keys.split('/').filter(x=>!!x).map(x=>x.replace('~0', '/').replace('~1', '~'))
+  }
+  if (keys.length > 1) {
+    if (Array.isArray(o)) {
+      const index = parseInt(keys[0])
+      return getPatchTarget(o[index], keys.slice(1))
+    }
+    return getPatchTarget(o[keys[0]], keys.slice(1))
+  }
+  // if target is a primitive, then the last key can't be applied to it
+  if (['number', 'bigint', 'string', 'boolean'].includes(typeof o)) return undefined
+  return o
+}
+
+interface HasId { [key:string]: any, _id: ObjectId }
+export const applyPatchRequest = (origObject:HasId, req:Request) => {
+  let newObject:HasId = { _id: new ObjectId() }
+  const isBodyEmpty = !Object.keys(req.body).length
+  if (isBodyEmpty) {
+    // patch using query params
+    newObject = {...origObject}
+    Object.keys(req.query).filter(x=>!!x).forEach((key)=>{
+      const target = getPatchTarget(newObject, key)
+      const value = req.query[key]?.toString()
+
+      if (target === undefined || value === undefined) return
+
+      const literals = [
+        ['undefined', undefined],
+        ['null', null],
+        ['true', true],
+        ['false', false],
+      ]
+      const l = literals.find(([x])=>value==x)
+      if (l != undefined) {
+        target[key] = l[1]
+        return
+      }
+      // quoted string
+      if (value[0] == '"' && value[0] == value[value.length-1]) {
+        target[key] = value.slice(1, value.length-2)
+        return
+      }
+      // number
+      const n = parseFloat(value)
+      if (n < Infinity && n > -Infinity) {
+        target[key] = n
+        return
+      }
+      // date-time
+      const d = new Date(value)
+      if (!isNaN(d.getTime())) {
+        target[key] = d
+      }
+      // otherwise as-is string
+      target[key] = value
+    })
+  } else {
+    // JSON Patch
+    const patch = JSON.parse(req.body)
+    if (!validatePatchSchema(req.body)) {
+      throw new ValidationError(ajv.errors)
+    }
+    newObject = applyPatch(origObject, patch).newDocument
+  }
+
+  if (origObject._id.toHexString() != newObject._id.toHexString()) {
+    throw new ValidationError('The _id field is read only.', '/_id')
+  }
+  return newObject
+}

@@ -2,9 +2,10 @@ import { getSigningKey, signToken, verifyToken } from './auth-sign-verify'
 
 describe('auth-sign-verify', ()=>{
   it('should sign and verify', async ()=> {
-    const {token} = await signToken({id:1234})
+    const {token, expires} = await signToken({id:1234})
     const result = await verifyToken(token)
     expect(result).not.toBeUndefined()
+    expect(expires).toBeGreaterThan(Date.now()/1000)
   })
 
   it('should verify using previous key', async ()=> {
