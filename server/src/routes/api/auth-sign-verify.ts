@@ -1,4 +1,4 @@
-import { secs } from "@/lib/secs"
+import { secs } from "../../lib/secs"
 import { FlattenedJWSInput, GenerateKeyPairResult, JWK, JWSHeaderParameters, JWTPayload, KeyLike, SignJWT, createLocalJWKSet, exportJWK, generateKeyPair, jwtVerify } from "jose"
 
 type JWKSFunction = (protectedHeader?: JWSHeaderParameters | undefined, token?: FlattenedJWSInput | undefined) => Promise<KeyLike>

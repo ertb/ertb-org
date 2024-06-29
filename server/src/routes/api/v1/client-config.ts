@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import pkg from '@/../package.json'
+import pkg from '../../../../../package.json'
 
 export const clientConfig = (_req:Request, res:Response) => {
   res.send({

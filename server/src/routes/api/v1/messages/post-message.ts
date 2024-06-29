@@ -1,9 +1,9 @@
-import { Message, PostedMessage, postedMessageSchema } from "@/model/messages"
+import { Message, PostedMessage, postedMessageSchema } from "../../../../model/messages"
 import { Request, Response, json } from "express"
-import { ValidationError, handleValidateError } from "@/lib/mongo-rest-route/validation-error"
-import { sendEmail } from "@/lib/email"
-import Ajv from "@/lib/mongo-rest-route/ajv-with-formats"
-import { withDb } from "@/lib/mongo-rest-route"
+import { ValidationError, handleValidateError } from "../../../../lib/mongo-rest-route/validation-error"
+import { sendEmail } from "../../../../lib/email"
+import Ajv from "../../../../lib/mongo-rest-route/ajv-with-formats"
+import { withDb } from "../../../../lib/mongo-rest-route"
 
 const ajv = new Ajv()
 const validator = ajv.compile(postedMessageSchema)

@@ -8,7 +8,7 @@
   },
 
   "scripts": {
-    "heroku-cleanup": "mv server/dist dist && rm -r client server",
+    "heroku-cleanup": "mv server/dist dist && rm -r client server && npm start",
     "start": "node dist/src/index.js",
 
     "install-client": "cd client && npm i",

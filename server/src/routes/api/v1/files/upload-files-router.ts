@@ -5,10 +5,10 @@ import { CopyObjectCommand, DeleteObjectCommand, S3Client } from '@aws-sdk/clien
 import { Upload } from '@aws-sdk/lib-storage'
 import { withS3 } from './with-s3'
 import { Stream } from 'stream'
-import { applyPatchRequest } from '@/lib/mongo-rest-route/apply-patch-request'
-import { ValidationError, handleValidateError } from '@/lib/mongo-rest-route/validation-error'
-import { getValidate } from '@/lib/mongo-rest-route/get-validate'
-import { fileSchema } from '@/model/files'
+import { applyPatchRequest } from '../../../../lib/mongo-rest-route/apply-patch-request'
+import { ValidationError, handleValidateError } from '../../../../lib/mongo-rest-route/validation-error'
+import { getValidate } from '../../../../lib/mongo-rest-route/get-validate'
+import { fileSchema } from '../../../../model/files'
 
 const router = Router()
 export const uploadFilesRouter = router

@@ -1,13 +1,13 @@
 import { Router } from 'express'
 import { userprofile } from './userprofile'
-import { MongoRestRouter } from '@/lib/mongo-rest-route'
-import { memberSchema } from '@/model/members'
-import { fileSchema } from '@/model/files'
+import { MongoRestRouter } from '../../../lib/mongo-rest-route'
+import { memberSchema } from '../../../model/members'
+import { fileSchema } from '../../../model/files'
 import { postMessage } from './messages/post-message'
 import { uploadFilesRouter } from './files/upload-files-router'
 import { checkUser } from '../check-user'
-import { userSchema } from '@/model/users'
-import { messageSchema } from '@/model/messages'
+import { userSchema } from '../../../model/users'
+import { messageSchema } from '../../../model/messages'
 import { clientConfig } from './client-config'
 
 const router = Router()

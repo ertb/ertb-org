@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { withDb } from '../../../lib/mongo-rest-route/with-db'
 import { signToken } from '../auth-sign-verify'
 import { Db, ObjectId } from 'mongodb'
-import { fetchJSON } from '@/lib/fetch-json'
+import { fetchJSON } from '../../../lib/fetch-json'
 
 const adminEmails = process.env.ADMIN_EMAILS?.split(',').map(e=>e.trim().toLowerCase()) || []
 
