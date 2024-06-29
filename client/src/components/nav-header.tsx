@@ -41,7 +41,7 @@ export const NavHeader = ({links, title, hero, logout, children}:Props) => {
       </NavLink>
       {title ? <span className="title">{title}</span> : undefined}
       {links ? <nav className='text-[#1f6998] text-right' ref={ref}>
-        <button className="md:hidden my-4" onClick={()=>setShowMenu(!showMenu)}>
+        <button name="main-menu" className="md:hidden my-4" onClick={()=>setShowMenu(!showMenu)}>
           <HamburgerMenuIcon/>
         </button>
         <ul className={cn("md:flex md:p-0 md:flex-wrap items-center justify-end duration-500 ease-in-out space-y-4 md:space-y-0 text-right md:gap-x-4 md:pt-0 md:h-auto overflow-hidden m-[-6px] p-[6px] md:overflow-visible visible", showMenu ? 'h-60' : 'h-0', menuHidden && 'hidden md:visible')}>
