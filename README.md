@@ -29,9 +29,14 @@ Everything else can be mimic'd using local docker images.
 git clone git@github.com:ertb/ertb-org.git
 cd ertb-org
 npm install
+(cd server && npm install)
+(cd client && npm install)
 ```
 
-Then, setup the environment variable files
+> ***Note:*** I _would've_ used `postinstall` for the server and client, but Heroku runs
+> `npm install` and so `postinstall` is hijacked!
+
+After the depencencies are isntalled, setup the environment variable files
 
 ```
 cp client/.env-example client/.env

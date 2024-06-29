@@ -6,6 +6,7 @@ import morgan from 'morgan'
 import { v1 } from './routes/api/v1'
 import { signingKeyRotation } from './routes/api/auth-sign-verify'
 import { ErrorHandler } from './lib/http-error'
+import path from 'path'
 
 signingKeyRotation(process.env.JWKS_ROTATION_TIME)
 
@@ -20,10 +21,9 @@ if (process.env.NODE_ENV != 'development') {
 }
 
 app.use('/api/v1', v1)
-
-app.get("/", (_req: Request, res: Response) => {
-  res.send("Express + TypeScript Server");
-})
+const publicroot = path.join(__dirname, 'public')
+app.use(express.static(publicroot))
+app.get('*', (_req:Request, res:Response) => res.sendFile('index.html', {root: publicroot}))
 
 app.use(ErrorHandler)
 

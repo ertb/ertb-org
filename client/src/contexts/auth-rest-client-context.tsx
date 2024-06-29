@@ -1,6 +1,6 @@
 import { ReactNode, createContext, useContext } from 'react'
 import { toast } from 'sonner'
-import { UseFetchOptions, useGet } from '@/lib/rest-client/use-get'
+import { useGet } from '@/lib/rest-client/use-get'
 import { useUserProfile } from './user-login-context'
 import { restClient } from '@/lib/rest-client/rest-client'
 
