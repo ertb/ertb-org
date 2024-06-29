@@ -1,0 +1,12 @@
+- https://github.com/AdmitHub/meteor-buildpack-horse.git
+
+  builds Meteor apps (not needed for v2 which uses React/Express)
+
+- https://github.com/ianpurvis/heroku-buildpack-version
+
+  sets SOURCE_VERSION to `git rev-parse --short HEAD`
+
+  Looks like it's meant to abbreivate the SOURCE_VERSION that Heroku sets.
+  That can be achived by taking the first 7 characters
+
+  in Javascript: `process.env.SOURCE_VERSION.slice(0,7)`

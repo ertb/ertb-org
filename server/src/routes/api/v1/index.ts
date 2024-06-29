@@ -8,6 +8,7 @@ import { uploadFilesRouter } from './files/upload-files-router'
 import { checkUser } from '../check-user'
 import { userSchema } from '@/model/users'
 import { messageSchema } from '@/model/messages'
+import { clientConfig } from './client-config'
 
 const router = Router()
 export const v1 = router
@@ -16,6 +17,7 @@ const sortOrder = {order:1}
 const sortNewest = {added:-1}
 
 // public
+router.get('/config', clientConfig)
 router.get('/userprofile', userprofile)
 router.use('/files', MongoRestRouter('files', fileSchema, {methods:['GET'], sort: sortNewest}))
 router.use('/members', MongoRestRouter('members', memberSchema, {methods:['GET'], sort: sortOrder}))

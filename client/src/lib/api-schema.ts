@@ -49,3 +49,9 @@ export interface UsersResponse {
   count: number
   users: UsersEntry[]
 }
+
+export interface ConfigResponse {
+  version: string
+  commit: string
+  clientId: string
+}

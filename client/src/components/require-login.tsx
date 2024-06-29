@@ -6,15 +6,15 @@ import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { Button } from './ui/button'
 import { useUserProfile } from '@/contexts/user-login-context'
 import { Skeleton } from './ui/skeleton'
+import { useClientConfig } from '@/contexts/client-config-context'
 
 interface Props {
   withRole?: string
   children: ReactNode
 }
 
-const clientId = import.meta.env.CLIENT_ID
-
 export const RequireLogin = ({withRole='', children}:Props) => {
+  const { clientId } = useClientConfig()
   const { profile, logout, loading } = useUserProfile()
   const hasRole = (role:string) => profile && (!role || role == profile.role)
 

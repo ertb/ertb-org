@@ -8,10 +8,11 @@ import { Files } from './pages/admin/files'
 import { Messages } from './pages/admin/messages'
 import { NotFound } from './components/not-found'
 import { Users } from './pages/admin/users'
+import { ClientConfigProvider } from './contexts/client-config-context'
 
 function App() {
   return (
-    <>
+    <ClientConfigProvider>
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<HomePage/>}/>
@@ -26,8 +27,8 @@ function App() {
           <Route path='*' element={<NotFound/>}/>
         </Routes>
       </BrowserRouter>
-    <Toaster/>
-    </>
+      <Toaster/>
+    </ClientConfigProvider>
   )
 }
 

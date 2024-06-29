@@ -2,19 +2,12 @@
 /// <reference types="vite/client" />
 
 import { fileURLToPath, URL } from "url"
-import react from '@vitejs/plugin-react-swc'
+import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { execSync } from "child_process"
 
-const gitVersion = JSON.stringify(execSync('git describe --tags --match="v[0-9]*" HEAD --abbrev=0').toString())
-const gitCommitHash = JSON.stringify(execSync('git rev-parse --short HEAD').toString())
-
 // https://vitejs.dev/config/
 export default defineConfig({
-  define: {
-    'import.meta.env.VITE_VERSION': gitVersion,
-    'import.meta.env.VITE_COMMIT_HASH': gitCommitHash,
-  },
   plugins: [react()],
   resolve: {
     alias: [

@@ -2,6 +2,7 @@ import { GoogleOAuthProvider, TokenResponse, googleLogout, useGoogleLogin } from
 import { ReactNode, createContext, useContext, useEffect, useState } from "react"
 import { toast } from "sonner"
 import { useSessionStorage } from "usehooks-ts"
+import { useClientConfig } from "./client-config-context"
 
 interface Credentials extends Omit<TokenResponse, 'error' | 'error_description' | 'error_uri'> {
   expires?: number
@@ -114,8 +115,7 @@ const Inner = ({children}:Props) => {
 }
 
 export const UserLoginProvider = ({children}:Props) => {
-  const clientId = import.meta.env.VITE_GOOGLE_API_CLIENT_ID
-  if (!clientId) throw new Error('VITE_GOOGLE_API_CLIENT_ID is not set')
+  const { clientId } = useClientConfig()
 
   return (
     <GoogleOAuthProvider clientId={clientId}>
