@@ -3,6 +3,7 @@ import { ReactNode, createContext, useContext, useEffect, useState } from "react
 import { toast } from "sonner"
 import { useSessionStorage } from "usehooks-ts"
 import { useClientConfig } from "./client-config-context"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface Credentials extends Omit<TokenResponse, 'error' | 'error_description' | 'error_uri'> {
   expires?: number
@@ -51,6 +52,9 @@ const fetchUserProfile = (creds:Credentials, setProfile:(profile:Profile)=>void)
     return res.json()
   })
   .then(setProfile)
+  .catch((e)=>{
+    console.error(e)
+  })
 }
 
 interface Props {
@@ -116,7 +120,7 @@ const Inner = ({children}:Props) => {
 
 export const UserLoginProvider = ({children}:Props) => {
   const { clientId } = useClientConfig()
-
+  if (!clientId) return <Skeleton/>
   return (
     <GoogleOAuthProvider clientId={clientId}>
       <Inner>{children}</Inner>

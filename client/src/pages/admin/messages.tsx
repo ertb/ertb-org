@@ -59,6 +59,9 @@ export const Messages = () => {
     <h2 className="center">Messages</h2>
     <div className="flex flex-col rounded-lg border border-gray-200 mb-10">
       {data?.messages.map(m=><MessageItem key={m._id} message={m} onDelete={onDelete}/>)}
+      {data?.count == 0 ?
+      <div className='w-full text-center'>No messages have been sent.</div>
+      : undefined}
     </div>
   </>
 }
