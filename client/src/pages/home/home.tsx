@@ -33,8 +33,8 @@ export const HomePage = () => {
         <p>In 2021, the Electronic Recording Technology Board was extended for an additional five years.</p>
 
         <ol>
-          <li><a href="http://leg.colorado.gov/sites/default/files/2016a_115_signed.pdf" target="_blank">Senate Bill 16-155 <OpenInNewWindowIcon className="inline"/></a></li>
-          <li><a href="http://leg.colorado.gov/sites/default/files/2021a_1225_signed.pdf" target="_blank">Senate Bill 21-1225 <OpenInNewWindowIcon className="inline"/></a></li>
+          <li><a href="http://leg.colorado.gov/sites/default/files/2016a_115_signed.pdf">Senate Bill 16-155 <OpenInNewWindowIcon className="inline"/></a></li>
+          <li><a href="http://leg.colorado.gov/sites/default/files/2021a_1225_signed.pdf">Senate Bill 21-1225 <OpenInNewWindowIcon className="inline"/></a></li>
         </ol>
 
         <h3>Our Vision</h3>
