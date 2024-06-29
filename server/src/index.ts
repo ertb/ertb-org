@@ -21,7 +21,7 @@ if (process.env.NODE_ENV != 'development') {
 }
 
 app.use('/api/v1', v1)
-const publicroot = path.join(__dirname, 'public')
+const publicroot = path.join(__dirname, '../public')
 app.use(express.static(publicroot))
 app.get('*', (_req:Request, res:Response) => res.sendFile('index.html', {root: publicroot}))
 
