@@ -18,6 +18,12 @@ export const RequireLogin = ({withRole='', children}:Props) => {
   const { profile, logout, loading } = useUserProfile()
   const hasRole = (role:string) => profile && (!role || role == profile.role)
 
+  if (!clientId) return (
+    <div className='flex-auto flex items-center justify-center dark:bg-gray-800'>
+      <Skeleton/>
+    </div>
+  )
+
   return (
     <GoogleOAuthProvider clientId={clientId}>
       {hasRole(withRole) ? children : (
