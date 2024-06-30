@@ -1,4 +1,4 @@
-import { DownloadFiles } from "../../components/download-files"
+import { DocumentList } from "../../components/document-list"
 
 export const DownloadLists = () => {
   const lists = {
@@ -13,7 +13,7 @@ export const DownloadLists = () => {
   return (<>
     <div className="list flex flex-wrap justify-center gap-8">
       {Object.entries(lists).map(([title, tag])=>(
-        <DownloadFiles key={title} title={<h2>{title}</h2>} tag={tag} all/>
+        <DocumentList key={title} title={<h2>{title}</h2>} tag={tag} all/>
       ))}
     </div>
   </>)

@@ -30,12 +30,12 @@ interface FormInputProps {
 }
 export const FormInput = ({label, description, field, textarea}:FormInputProps) => (
   <FormItem>
-    <FormLabel>{label}</FormLabel>
-    <FormControl>
-      {textarea ?  <Textarea {...field}/> : <Input {...field}/>}
-    </FormControl>
-    {description ? <FormDescription>{description}</FormDescription> : undefined}
-    <FormMessage/>
+      <FormLabel>{label}</FormLabel>
+      <FormControl>
+        {textarea ?  <Textarea {...field}/> : <Input {...field}/>}
+      </FormControl>
+      <FormDescription>{description}</FormDescription>
+      <FormMessage/>
   </FormItem>
 )
 

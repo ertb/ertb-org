@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 import { FilesResponse, FilesEntry } from "@/lib/api-schema"
 import { FileRejection } from "react-dropzone"
-import { DownloadLink } from "../home/download-link"
+import { DocumentLink } from "./document-link"
 import { useGet } from "@/lib/rest-client/use-get"
 import { useAuthRestClient } from "@/contexts/auth-rest-client-context"
 import { useUserProfile } from "@/contexts/user-login-context"
@@ -107,7 +107,7 @@ const FileItem = ({file, onDelete}:FileItemProps) => {
   }
 
   return (<div className="p-1 gap-1 [&:not(:last-child)]:border-b border-gray-200 hover:[&:not(:focus)]:bg-gray-100 focus-within:bg-gray-200 flex justify-between relative">
-    <DownloadLink url={file.url} iconOnly/>
+    <DocumentLink href={file.url} iconOnly/>
     <Input value={inputFilename} onChange={(e)=>changeFilename(e.target.value)}/>
     <OptionSelect placeholder='' className='w-40' value={tag || undefined} options={fileTags} onValueChange={changeTag}></OptionSelect>
     <ConfirmDeleteButton onDelete={deleteFile}/>

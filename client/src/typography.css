@@ -21,6 +21,7 @@ footer {
   font-family: Montserrat, Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
+section button.link,
 section {
   font-family: "Roboto Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.05rem;
@@ -34,16 +35,19 @@ section.dark {
   color: white;
 }
 
-h2 {
+section h2 {
   font-size: 2.25rem;
   text-align: center;
   margin-top: 0;
   margin-bottom: 0.5rem;
 }
-h3 {
+section h3 {
   font-size: 1.75rem;
 }
-h1, h2, h3, h4 {
+section h1,
+section h2,
+section h3,
+section h4 {
   color: #2c353d;
   font-weight: 700;
   font-family: Montserrat, Helvetica Neue, Helvetica, Arial, sans-serif;
@@ -72,6 +76,7 @@ section ol {
   list-style-type: disc;
 }
 nav a,
+section button.link,
 section a {
   color: var(--ertb-blue-text);
   margin: 0 -2px;
@@ -81,11 +86,12 @@ nav button {
   margin: -2px;
   padding: 2px;
 }
+section button.link:hover,
 section a:hover {
   text-decoration: underline;
 }
 
-button:focus-visible,
+section button.link:focus-visible,
 a:focus-visible {
   	/* inner indicator */
 	outline: 1px hsl(var(--ring)) solid;

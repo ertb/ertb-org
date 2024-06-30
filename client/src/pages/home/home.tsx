@@ -2,9 +2,10 @@ import { NavHeader } from "@/components/nav-header"
 import { BoardMembers } from "./board-members"
 import { Administration } from "./administration"
 import { OpenInNewWindowIcon } from "@radix-ui/react-icons"
-import { DownloadFiles } from "../../components/download-files"
+import { DocumentList } from "../../components/document-list"
 import { ContactForm } from "./contact-form"
 import { AppFooter } from "@/components/app-footer"
+import { ConfirmDocumentLink } from "@/components/confirm-document-link"
 
 export const HomePage = () => {
   const navLinks = {
@@ -33,8 +34,12 @@ export const HomePage = () => {
         <p>In 2021, the Electronic Recording Technology Board was extended for an additional five years.</p>
 
         <ol>
-          <li><a href="http://leg.colorado.gov/sites/default/files/2016a_115_signed.pdf">Senate Bill 16-155 <OpenInNewWindowIcon className="inline"/></a></li>
-          <li><a href="http://leg.colorado.gov/sites/default/files/2021a_1225_signed.pdf">Senate Bill 21-1225 <OpenInNewWindowIcon className="inline"/></a></li>
+          <li>
+            <ConfirmDocumentLink href="http://leg.colorado.gov/sites/default/files/2016a_115_signed.pdf">Senate Bill 16-155 <OpenInNewWindowIcon className="inline"/></ConfirmDocumentLink>
+          </li>
+          <li>
+            <ConfirmDocumentLink href="http://leg.colorado.gov/sites/default/files/2021a_1225_signed.pdf">Senate Bill 21-1225 <OpenInNewWindowIcon className="inline"/></ConfirmDocumentLink>
+          </li>
         </ol>
 
         <h3>Our Vision</h3>
@@ -74,13 +79,13 @@ export const HomePage = () => {
       <section id="grants" className="px-8 py-16 lg:px-32 bg-slate-100">
         <h2>Grants</h2>
         <div className="md:w-3/4 mx-auto">
-          <DownloadFiles tag='grants' full/>
+          <DocumentList tag='grants' full/>
         </div>
       </section>
       <section id="rfp" className="px-8 py-16 lg:px-32">
         <h2>RFP</h2>
         <div className="md:w-3/4 mx-auto">
-          <DownloadFiles tag='rfp' full/>
+          <DocumentList tag='rfp' full/>
         </div>
       </section>
       <section id="contact" className="dark px-8 py-16 lg:px-32 bg-sky-950">
