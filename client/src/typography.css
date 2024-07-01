@@ -27,6 +27,7 @@ section {
   font-size: 1.05rem;
 }
 section button,
+section div.input,
 section input,
 section form {
   font-family: Montserrat, Helvetica Neue, Helvetica, Arial, sans-serif;

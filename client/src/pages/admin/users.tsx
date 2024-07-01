@@ -2,18 +2,27 @@ import { PencilOffIcon } from "@/components/PencilOffIcon"
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button"
 import { OptionSelect } from "@/components/option-select"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 import { useAuthRestClient } from "@/contexts/auth-rest-client-context"
 import { useUserProfile } from "@/contexts/user-login-context"
 import { UsersEntry, UsersResponse } from "@/lib/api-schema"
 import { RestClientResponseError } from "@/lib/rest-client/rest-client"
-import { useState } from "react"
+import { cn } from "@/lib/utils"
+import { useState, useTransition } from "react"
 
 const userTags = [
   { value: 'admin', label: 'Admin'},
   { value: 'user', label: 'User'},
 ]
+
+const ReadOnly = ({value, className}:{value:string, className:string}) => {
+  const label = userTags.find(x=>x.value == value)?.label || value
+  return (
+    <div className={cn("input flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground", className)}>
+      {label}
+    </div>
+  )
+}
 
 interface UserItemProps {
   user: UsersEntry
@@ -65,11 +74,11 @@ const UserItem = ({user, onDelete, isSelf}:UserItemProps) => {
   }
 
   return (<div className="p-1 gap-1 [&:not(:last-child)]:border-b border-gray-200 hover:[&:not(:focus)]:bg-gray-100 focus-within:bg-gray-200 flex justify-between relative">
-    <Input value={user.userinfo.name} readOnly/>
-    <Input value={user.userinfo.email} readOnly/>
+    <ReadOnly value={user.userinfo.name}/>
+    <ReadOnly value={user.userinfo.email}/>
     <></>
     {isSelf ? <>
-      <OptionSelect className='w-40 shrink-0' value={role || undefined} options={[userTags[0]]} onValueChange={value=>changeRole(value)}></OptionSelect>
+      <ReadOnly className='w-40 shrink-0' value={role}></ReadOnly>
       <Button className='shrink-0 w-10 p-3' variant='ghost' disabled><PencilOffIcon/></Button>
     </>:<>
       <OptionSelect className='w-40 shrink-0' value={role || undefined} options={userTags} onValueChange={value=>changeRole(value)}></OptionSelect>
