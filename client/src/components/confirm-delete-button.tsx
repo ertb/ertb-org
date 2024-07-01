@@ -8,6 +8,7 @@ interface Props {
   onDelete?:()=>void
   left?:boolean
   label?:string
+  className?:string
 }
 export const ConfirmDeleteButton = ({onDelete: onConfirm, left, label='Delete'}:Props) => {
   const [showConfirm, setShowConfirm] = useState(false)

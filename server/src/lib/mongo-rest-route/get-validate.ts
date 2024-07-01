@@ -1,4 +1,5 @@
-import Ajv, { JSONSchemaType } from "./ajv-with-formats"
+import Ajv, { JSONSchemaType } from "ajv"
+import addFormats from 'ajv-formats'
 import { ValidationError } from "./validation-error"
 
 const requiredIdSchema = { type: "string" }
@@ -33,7 +34,7 @@ interface Options {
   noManagedDates?: boolean
 }
 export const getValidate = <T extends object>(schema:JSONSchemaType<T>, options:Options={}) => {
-  const ajv = new Ajv()
+  const ajv = addFormats(new Ajv())
   const { dateFields:dateFieldOverrides } = options
   const dateFields = { added:'added', lastModified:'lastModified', deleted:'deleted', ...dateFieldOverrides}
   const idSchema = withId(schema)

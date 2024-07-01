@@ -2,10 +2,11 @@ import { Message, PostedMessage, postedMessageSchema } from "../../../../model/m
 import { Request, Response, json } from "express"
 import { ValidationError, handleValidateError } from "../../../../lib/mongo-rest-route/validation-error"
 import { sendEmail } from "../../../../lib/email"
-import Ajv from "../../../../lib/mongo-rest-route/ajv-with-formats"
+import Ajv from 'ajv'
+import addFormats from 'ajv-formats'
 import { withDb } from "../../../../lib/mongo-rest-route"
 
-const ajv = new Ajv()
+const ajv = addFormats(new Ajv())
 const validator = ajv.compile(postedMessageSchema)
 
 const validateMessage = (data:object) => {

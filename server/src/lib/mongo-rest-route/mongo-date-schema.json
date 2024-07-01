@@ -1,9 +1,0 @@
-{
-  "type": "object",
-  "properties": {
-    "$date": {
-      "type": "string",
-      "formate": "date-time"
-    }
-  }
-}

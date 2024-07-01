@@ -1,3 +1,4 @@
+import { PencilOffIcon } from "@/components/PencilOffIcon"
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button"
 import { OptionSelect } from "@/components/option-select"
 import { Button } from "@/components/ui/button"
@@ -7,7 +8,6 @@ import { useAuthRestClient } from "@/contexts/auth-rest-client-context"
 import { useUserProfile } from "@/contexts/user-login-context"
 import { UsersEntry, UsersResponse } from "@/lib/api-schema"
 import { RestClientResponseError } from "@/lib/rest-client/rest-client"
-import { ContactRoundIcon } from "lucide-react"
 import { useState } from "react"
 
 const userTags = [
@@ -69,10 +69,10 @@ const UserItem = ({user, onDelete, isSelf}:UserItemProps) => {
     <Input value={user.userinfo.email} readOnly/>
     <></>
     {isSelf ? <>
-      <OptionSelect className='w-32 shrink-0' value={role || undefined} options={[userTags[0]]} onValueChange={value=>changeRole(value)}></OptionSelect>
-      <Button variant='ghost' disabled><ContactRoundIcon/></Button>
+      <OptionSelect className='w-40 shrink-0' value={role || undefined} options={[userTags[0]]} onValueChange={value=>changeRole(value)}></OptionSelect>
+      <Button className='shrink-0 w-10 p-3' variant='ghost' disabled><PencilOffIcon/></Button>
     </>:<>
-      <OptionSelect className='w-32 shrink-0' value={role || undefined} options={userTags} onValueChange={value=>changeRole(value)}></OptionSelect>
+      <OptionSelect className='w-40 shrink-0' value={role || undefined} options={userTags} onValueChange={value=>changeRole(value)}></OptionSelect>
       <ConfirmDeleteButton onDelete={deleteUser}/>
     </>}
   </div>)

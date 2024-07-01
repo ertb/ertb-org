@@ -1,5 +1,5 @@
 import { Request, Response, Router, RouterOptions, json } from 'express'
-import { JSONSchemaType } from './ajv-with-formats'
+import { JSONSchemaType } from 'ajv'
 import q2m from 'query-to-mongo'
 import { Db, FindOptions, ObjectId } from 'mongodb'
 import { ValidationError, handleValidateError } from './validation-error'
@@ -16,25 +16,6 @@ interface DateFields {
 const NotFoundMessage = 'An entry with that id could not be found.'
 
 const idPath = '/:id([0-9a-fA-F]{24})' // 24-hex-digits
-
-interface PatchTarget { [key:string]: any, _id: ObjectId }
-
-const getPatchTarget = (o:PatchTarget, keys:string|string[]):PatchTarget|undefined => {
-  if (o === undefined) return undefined
-  if (!Array.isArray(keys)) {
-    keys = keys.split('/').filter(x=>!!x).map(x=>x.replace('~0', '/').replace('~1', '~'))
-  }
-  if (keys.length > 1) {
-    if (Array.isArray(o)) {
-      const index = parseInt(keys[0])
-      return getPatchTarget(o[index], keys.slice(1))
-    }
-    return getPatchTarget(o[keys[0]], keys.slice(1))
-  }
-  // if target is a primitive, then the last key can't be applied to it
-  if (['number', 'bigint', 'string', 'boolean'].includes(typeof o)) return undefined
-  return o
-}
 
 type DbResolver = ()=>Db
 export interface MongoRestRouterOptions extends RouterOptions {
@@ -248,6 +229,7 @@ export const MongoRestRouter = <T extends object>(collection:string, schema:JSON
 
       try {
         const newObject = applyPatchRequest(origObject, req)
+        console.log('PATCH newObject', newObject)
         validate(newObject, {isUpdate:true})
         if (!noManagedDates) {
           (newObject as {[key:string]:any})[dateFields.lastModified] = new Date()

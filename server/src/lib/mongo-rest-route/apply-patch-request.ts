@@ -1,11 +1,12 @@
 import { ValidationError } from "./validation-error"
 import jsonPatchSchema from './json-patch-schema.json'
-import Ajv from './ajv-with-formats'
+import Ajv from 'ajv'
+import addFormats from 'ajv-formats'
 import { ObjectId } from "mongodb"
 import { Request } from "express"
 import { applyPatch } from 'fast-json-patch'
 
-const ajv = new Ajv()
+const ajv = addFormats(new Ajv())
 const validatePatchSchema = ajv.compile(jsonPatchSchema)
 
 interface PatchTarget { [key:string]: any, _id: ObjectId }
