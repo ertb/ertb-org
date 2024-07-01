@@ -28,7 +28,7 @@ export const DocumentList = ({title, tag, limit=12, full, all}:Props) => {
       </div>}
       {data?.files.map(({_id, url})=><ConfirmDocumentLink variant='download' key={_id} href={url}/>)}
       {(!showAll && count > limit)
-        ? all ? <Button onClick={()=>setShowAll(true)} variant="outline" className="w-full">Show {count-limit} more</Button> : <div className="mt-4">{count-limit} more in <a className="italic" href={`/downloads?tag=${tag}`}>Downloads</a></div>
+        ? all ? <Button onClick={()=>setShowAll(true)} variant="outline" className="w-full">Show {count-limit} more</Button> : <div className="mt-4">{count-limit} more in <a className="italic" href={`/downloads#${tag}`}>Downloads</a></div>
         : undefined }
     </div>
   </>)
