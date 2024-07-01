@@ -8,14 +8,14 @@ import { useUserProfile } from "@/contexts/user-login-context"
 import { UsersEntry, UsersResponse } from "@/lib/api-schema"
 import { RestClientResponseError } from "@/lib/rest-client/rest-client"
 import { cn } from "@/lib/utils"
-import { useState, useTransition } from "react"
+import { useState } from "react"
 
 const userTags = [
   { value: 'admin', label: 'Admin'},
   { value: 'user', label: 'User'},
 ]
 
-const ReadOnly = ({value, className}:{value:string, className:string}) => {
+const ReadOnly = ({value, className}:{value:string, className?:string}) => {
   const label = userTags.find(x=>x.value == value)?.label || value
   return (
     <div className={cn("input flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground", className)}>
