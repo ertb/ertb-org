@@ -12,15 +12,14 @@ signingKeyRotation(process.env.JWKS_ROTATION_TIME)
 
 const app = express()
 
-// redirect to https if not localhost
-app.use((req:Request, res:Response, next: NextFunction)=>{
-  const hostname = req.get('host')?.split(':')[0]
-  if (hostname != 'localhost' && !req.secure) {
-    var fullUrl = 'https://' + req.get('host') + req.originalUrl
-    return res.redirect(fullUrl)
+// force SSL for Heroku proxy
+var forceSSL = function (req:Request, res:Response, next:NextFunction) {
+  if (req.headers['x-forwarded-proto'] == 'http') {
+    return res.redirect('https://' + req.get('Host') + req.url)
   }
-  next()
-})
+  return next()
+}
+app.use(forceSSL)
 
 app.set('json spaces', 2) 
 const port = process.env.PORT || 3000

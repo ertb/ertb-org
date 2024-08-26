@@ -13,9 +13,11 @@ interface DateFields {
   deleted?: string
 }
 
+interface HasId { [key:string]: any, _id: ObjectId|string }
+
 const NotFoundMessage = 'An entry with that id could not be found.'
 
-const idPath = '/:id([0-9a-fA-F]{24})' // 24-hex-digits
+const idPath = '/:id([0-9a-zA-Z]{17}|[0-9a-fA-F]{24})' // 17-alpha-numeric or 24-hex-digits
 
 type DbResolver = ()=>Db
 export interface MongoRestRouterOptions extends RouterOptions {
@@ -80,6 +82,12 @@ export const MongoRestRouter = <T extends object>(collection:string, schema:JSON
 
   const {validate, validateBulk} = getValidate(schema, {dateFields, noManagedDates})
 
+  const idCriteria = (id:string) => {
+    console.log('id', id)
+    if (id.length >= 24) return new ObjectId(id)
+    return id
+  }
+
   if (!methods || methods.includes('GET')) {
     /* ----------------------------------------
      * GET / - retrieve a list of entries by search criteria
@@ -103,8 +111,8 @@ export const MongoRestRouter = <T extends object>(collection:string, schema:JSON
      * GET /:id - retrieve an entry
      * ----------------------------------------*/
     router.get(idPath, async (req:Request, res:Response)=>{
-      const c = req.db.collection(collection)
-      const criteria = {'_id': new ObjectId(req.params.id)}
+      const c = req.db.collection<HasId>(collection)
+      const criteria = {'_id': idCriteria(req.params.id)}
       if (!noManagedDates) {
         (criteria as {[key:string]:any})[dateFields.deleted] = { "$exists" : false }
       }
@@ -121,7 +129,7 @@ export const MongoRestRouter = <T extends object>(collection:string, schema:JSON
        * GET /archive - retrieve a list of deleted entries by search criteria
        * ----------------------------------------*/
       router.get(`/archive`, async (req:Request, res:Response)=>{
-        const c = req.db.collection(collection)
+        const c = req.db.collection<HasId>(collection)
         const { criteria, options } = q2m(req.query)
         ;(criteria as {[key:string]:any})[dateFields.deleted] = { "$exists" : true }
         const result = {} as any
@@ -134,8 +142,8 @@ export const MongoRestRouter = <T extends object>(collection:string, schema:JSON
        * GET /archive/:id - retrieve a deleted entry
        * ----------------------------------------*/
       router.get(`/archive/${idPath}`, async (req:Request, res:Response)=>{
-        const c = req.db.collection(collection)
-        const criteria = {'_id': new ObjectId(req.params.id)}
+        const c = req.db.collection<HasId>(collection)
+        const criteria = {'_id': idCriteria(req.params.id)}
         ;(criteria as {[key:string]:any})[dateFields.deleted] = { "$exists" : true }
         const found = await c.findOne(criteria)
         if (!found) {
@@ -216,8 +224,9 @@ export const MongoRestRouter = <T extends object>(collection:string, schema:JSON
      * PATCH /:id - update individual fields in an entry
      * ----------------------------------------*/
     router.patch(idPath, async (req:Request, res:Response)=>{
-      const c = req.db.collection(collection)
-      const criteria = {'_id': new ObjectId(req.params.id)}
+      const c = req.db.collection<HasId>(collection)
+      const criteria = {'_id': idCriteria(req.params.id)}
+      console.log('criteria', criteria)
       if (!noManagedDates) {
         (criteria as {[key:string]:any})[dateFields.deleted] = { "$exists" : false }
       }
@@ -248,15 +257,16 @@ export const MongoRestRouter = <T extends object>(collection:string, schema:JSON
      * DELETE /:id - update an entry
      * ----------------------------------------*/
     router.delete(idPath, async (req:Request, res:Response)=>{
-      const c = req.db.collection(collection)
+      const c = req.db.collection<HasId>(collection)
+      console.log('DELETE', req.params.id)
       if (noArchive || noManagedDates) {
-        const result = await c.deleteOne({"_id": new ObjectId(req.params.id)})
+        const result = await c.deleteOne({"_id": idCriteria(req.params.id)})
         res.status(200).send({deletedCount: result.deletedCount})
         return
       }
 
       // set deleted field
-      const criteria = {'_id': new ObjectId(req.params.id)}
+      const criteria = {'_id': idCriteria(req.params.id)}
       if (!noManagedDates) {
         (criteria as {[key:string]:any})[dateFields.deleted] = { "$exists" : false }
       }

@@ -9,7 +9,7 @@ import { applyPatch } from 'fast-json-patch'
 const ajv = addFormats(new Ajv())
 const validatePatchSchema = ajv.compile(jsonPatchSchema)
 
-interface PatchTarget { [key:string]: any, _id: ObjectId }
+interface PatchTarget { [key:string]: any, _id: ObjectId|string }
 
 const getPatchTarget = (o:PatchTarget, keys:string|string[]):PatchTarget|undefined => {
   if (o === undefined) return undefined
@@ -28,9 +28,14 @@ const getPatchTarget = (o:PatchTarget, keys:string|string[]):PatchTarget|undefin
   return o
 }
 
-interface HasId { [key:string]: any, _id: ObjectId }
-export const applyPatchRequest = (origObject:HasId, req:Request) => {
-  let newObject:HasId = { _id: new ObjectId() }
+const idEquals = (a:string|ObjectId, b:string|ObjectId) => {
+  if (typeof a != typeof b) return false
+  if (typeof a == 'string') return a == b
+  return a.toHexString() == (b as ObjectId).toHexString()
+}
+
+export const applyPatchRequest = (origObject:PatchTarget, req:Request) => {
+  let newObject:PatchTarget = { _id: new ObjectId() }
   const isBodyEmpty = !Object.keys(req.body).length
   if (isBodyEmpty) {
     // patch using query params
@@ -80,7 +85,7 @@ export const applyPatchRequest = (origObject:HasId, req:Request) => {
     newObject = applyPatch(origObject, patch).newDocument
   }
 
-  if (origObject._id.toHexString() != newObject._id.toHexString()) {
+  if (!idEquals(origObject._id, newObject._id)) {
     throw new ValidationError('The _id field is read only.', '/_id')
   }
   return newObject

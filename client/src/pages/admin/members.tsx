@@ -61,7 +61,7 @@ const MemberItem = ({member, onDelete}:MemberItemProps) => {
     authPatch(`/api/v1/members/${member._id}?${field}=${encodeURIComponent(value)}`)
     .then(()=>{
       member[field] == value
-      toast.success('File renamed')
+      toast.success('Member updated')
     })
     .catch((e)=>{
       setField(field, member[field] || '')
@@ -74,7 +74,7 @@ const MemberItem = ({member, onDelete}:MemberItemProps) => {
         toast.error('Unexpected error', e.message)
         return
       }
-      toast.error(`Couldn't rename file`)
+      toast.error(`Couldn't update member`)
     })
   }
   useEffect(()=>{applyDelayedChange('name', db_name)}, [db_name, member.name])
