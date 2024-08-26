@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
-import express, { Request, Response } from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import morgan from 'morgan'
 import { v1 } from './routes/api/v1'
 import { signingKeyRotation } from './routes/api/auth-sign-verify'
@@ -11,6 +11,17 @@ import path from 'path'
 signingKeyRotation(process.env.JWKS_ROTATION_TIME)
 
 const app = express()
+
+// redirect to https if not localhost
+app.use((req:Request, res:Response, next: NextFunction)=>{
+  const hostname = req.get('host')?.split(':')[0]
+  if (hostname != 'localhost' && !req.secure) {
+    var fullUrl = 'https://' + req.get('host') + req.originalUrl
+    return res.redirect(fullUrl)
+  }
+  next()
+})
+
 app.set('json spaces', 2) 
 const port = process.env.PORT || 3000
 
