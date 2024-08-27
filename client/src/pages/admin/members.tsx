@@ -57,10 +57,13 @@ const MemberItem = ({member, onDelete}:MemberItemProps) => {
   }
 
   const applyDelayedChange = (field: 'name'|'title'|'details'|'tag', value: string) => {
-    if (member[field] == value) return
+    if (member[field] == value) {
+      console.log('no change to field', {'field': field, 'old': member[field], 'new': value})
+      return
+    }
     authPatch(`/api/v1/members/${member._id}?${field}=${encodeURIComponent(value)}`)
     .then(()=>{
-      member[field] == value
+      member[field] = value
       toast.success('Member updated')
     })
     .catch((e)=>{
@@ -114,12 +117,14 @@ const AddMember = ({onAdd}:AddMemberProps) => {
     _setMember(newMember)
   }
   const addMember = () => {
-    authPost<{insertedId:any}>('/api/v1/members', member)
+    authPost<{insertedId:string}>('/api/v1/members', member)
     .then((res)=>{
       toast.success('Member added')
       member._id = res.insertedId
       const newMember = {_id: res.insertedId, ...member} as MembersEntry
       onAdd(newMember)
+      // clear form
+      _setMember({name:'', title:'', details:''} as {[key:string]:string})
     })
     .catch(()=>{toast.error('Failed to add member')})
   }

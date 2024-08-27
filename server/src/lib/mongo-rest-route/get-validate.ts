@@ -62,13 +62,13 @@ export const getValidate = <T extends object>(schema:JSONSchemaType<T>, options:
   }
 
   /** Validate a single object or an array */
-  const validateBulk = (payload:unknown):(T[]) => {
+  const validateBulk = (payload:unknown):(T|T[]) => {
     if (Array.isArray(payload)) {
       payload.forEach(x=>!validate(x)) // throws error if any are invalid
       return payload as T[]
     }
     validate(payload as T)
-    return [payload as T]
+    return payload as T
   }
   return {validate, validateBulk}
 }

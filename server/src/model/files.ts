@@ -8,7 +8,7 @@ export interface File {
 export const fileSchema:JSONSchemaType<File> = {
   type: 'object',
   properties: {
-    url: { type: "string", format: "uri" },
+    url: { type: "string", /*format: "uri"*/ },
     tag: { type: 'string', nullable: true },
   },
   required: [ 'url' ],
