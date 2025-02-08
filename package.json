@@ -1,28 +1,23 @@
 {
   "name": "ertb-org",
   "description": "The ertb.org website",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "engines": {
     "node": "22.2.0",
     "npm": "10.7.0"
   },
-
   "scripts": {
     "heroku-cleanup": "mv server/dist app && rm -r client server",
     "start": "node app/server/src/index.js",
-
     "install-client": "cd client && npm i",
     "install-server": "cd server && npm i",
     "postinstall": "npm run install-client && npm run install-server",
-
     "dev-client": "cd client && npm run dev",
     "dev-server": "cd server && npm run dev",
     "dev": "concurrently -k -n \"SRV,CLI\" -c \"blue,magenta\" \"npm run dev-server\" \"npm run dev-client\"",
-
     "build-client": "cd client && npm run build",
     "build-server": "cd server && npm run build",
     "build": "npm run build-client && npm run build-server && ls server/dist",
-
     "clean-build": "rm -rf client/dist server/dist && npm run build"
   },
   "devDependencies": {
