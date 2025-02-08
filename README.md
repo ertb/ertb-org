@@ -1,5 +1,4 @@
-Electronic Recording Technology Board
-=====================================
+# Electronic Recording Technology Board
 
 This is the source code for the [ertb.org](https://ertb.org) website.
 
@@ -31,7 +30,7 @@ cd ertb-org
 npm install
 ```
 
-After the depencencies are isntalled, setup the environment variable files
+After the dependencies are installed, setup the environment variable files
 
 ```
 cp server/.env-example server/.env
@@ -40,6 +39,7 @@ cp server/.env-example server/.env
 And update the following lines (the rest are match the local development)
 
 **server/.env**
+
 ```sh
 GOOGLE_API_CLIENT_ID=<your-google-api-client-id>
 ADMIN_EMAILS=<a-comma-separated-list-to-start>
@@ -61,3 +61,25 @@ Then, visit [http://localhost:3000](http://localhost:3000)
 In order to test Google OAuth using localhost you need to add both `http://localhost;3000`
 _and_ `http://localhost` to the list of Authorized Origins for the Client ID
 in [Google API Console > Credentials][1]
+
+### Deploying an update
+
+#### TL;DR
+
+1. `npm run build`
+2. `npm version patch`
+3. `git push`
+4. `git push heroku main`
+
+#### A little explanation
+
+The **ertb.org** website is hosted on [heroku](https://www.heroku.com/).
+
+First, ensure the project builds with `npm run build` and commit your changes to the `main` branch.
+
+Increment the version in **package.json** with `npm version patch`. Optionally use `minor` or `major`
+depending on the type of change.
+
+Push the changes to github with `git push`.
+
+Finally publish to **heroku** with `git push heroku main`. You may need to run `heroku login` first.
