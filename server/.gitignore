@@ -3,6 +3,7 @@ node_modules
 npm-debug.log
 .env
 dist
+coverage
 
 # Local development
 *.env

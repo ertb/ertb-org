@@ -19,19 +19,18 @@ describe('auth-sign-verify', ()=>{
     const {token} = await signToken({id:1234})
     await getSigningKey({forceRotate:true}) // force key rotation
     await getSigningKey({forceRotate:true}) // rotate again so original key is old
-    hideConsoleError(async ()=>{
-      const result = await verifyToken(token)
-      expect(result).toBeUndefined()
+    await hideConsoleError(async ()=>{
+      await expect(verifyToken(token)).rejects.toThrow()
     })
   })
 })
 
-const hideConsoleError = (fn:(()=>void)) => {
+const hideConsoleError = async (fn:(()=>Promise<void>)) => {
   const resetConsole = ()=>global.console = {...console}
   global.console = { ...console, error: jest.fn() }
   try {
-    fn()
+    await fn()
   } finally {
-    resetConsole
+    resetConsole()
   }
 }
