@@ -4,7 +4,7 @@
   "description": "A server to support ertb.org",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsc && tsc-alias",
+    "build": "tsc -p tsconfig.build.json && tsc-alias",
     "postbuild": "npm run postbuild-npm-ci && npm run postbuild-cp-client",
     "postbuild-npm-ci": "cp package*.json dist && (cd dist && npm ci --omit-dev)",
     "postbuild-cp-client": "rm -rf dist/server/public && cp -r ../client/dist dist/server/public",

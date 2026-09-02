@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npx vite",
-    "build": "tsc && npx vite build",
+    "build": "tsc -p tsconfig.build.json && npx vite build",
     "postbuild": "cp -rf public/* dist",
     "lint": "eslint src --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "npx vite preview",
