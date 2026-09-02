@@ -60,7 +60,11 @@ export const ConfirmDocumentLink = ({href, variant='link', children, doctype}:Pr
 
       <DialogFooter>
         <DialogClose asChild>
-          <LinkButton href={href} download={filename} ref={autoFocus}>Continue</LinkButton>
+          { variant == 'download' ?
+          <LinkButton href={href} download={filename} type={undefined} ref={autoFocus}>Continue</LinkButton>
+          :
+          <LinkButton href={href} target="_blank" rel="noopener noreferrer" type={undefined} ref={autoFocus}>Continue</LinkButton>
+          }
         </DialogClose>
       </DialogFooter>
     </DialogContent>

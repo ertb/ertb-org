@@ -19,7 +19,7 @@ router.use(withDb, withS3)
 
 const upload = async (s3:S3Client, Bucket:string, Key: string, req:Request) => {
   var pass = new Stream.PassThrough()
-  const promise = new Upload({client:s3, params: {Bucket, Key, Body: pass, ACL: "public-read"}}).done()
+  const promise = new Upload({client:s3, params: {Bucket, Key, Body: pass, ACL: "public-read", ContentType: req.headers['content-type']}}).done()
   req.pipe(pass)
   await promise
 }
