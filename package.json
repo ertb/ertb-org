@@ -18,7 +18,10 @@
     "build-client": "cd client && npm run build",
     "build-server": "cd server && npm run build",
     "build": "npm run build-client && npm run build-server && ls server/dist",
-    "clean-build": "rm -rf client/dist server/dist && npm run build"
+    "clean-build": "rm -rf client/dist server/dist && npm run build",
+    "test-client": "cd client && npm run test:ci",
+    "test-server": "cd server && npm run test:ci",
+    "test": "npm run test-client && npm run test-server"
   },
   "devDependencies": {
     "concurrently": "^8.2.1",
