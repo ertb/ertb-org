@@ -69,7 +69,7 @@ in [Google API Console > Credentials][1]
 1. `npm run test`
 2. `npm run build`
 3. `npm version patch` for fixes or `npm version minor` for new features
-4. `git push`
+4. `git push --follow-tags`
 5. `git push heroku main`
 
 #### A little explanation
@@ -79,8 +79,8 @@ The **ertb.org** website is hosted on [heroku](https://www.heroku.com/).
 First, ensure the project builds with `npm run build` and commit your changes to the `main` branch.
 
 Increment the version in **package.json** with `npm version patch`. Optionally use `minor` or `major`
-depending on the type of change.
+depending on the type of change. This also creates a local `v*` git tag (eg. `v2.2.1`).
 
-Push the changes to github with `git push`.
+Push the changes, and that new tag, to github with `git push --follow-tags`.
 
 Finally publish to **heroku** with `git push heroku main`. You may need to run `heroku login` first.
