@@ -66,10 +66,11 @@ in [Google API Console > Credentials][1]
 
 #### TL;DR
 
-1. `npm run build`
-2. `npm version patch`
-3. `git push`
-4. `git push heroku main`
+1. `npm run test`
+2. `npm run build`
+3. `npm version patch` for fixes or `npm version minor` for new features
+4. `git push`
+5. `git push heroku main`
 
 #### A little explanation
 
