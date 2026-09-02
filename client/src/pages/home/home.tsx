@@ -51,6 +51,9 @@ export const HomePage = () => {
             In 2021, the Electronic Recording Technology Board was extended for
             an additional five years.
           </p>
+          <p>
+            In 2024, the ERTB was extended until 2029.
+          </p>
 
           <ol>
             <li>
@@ -61,6 +64,11 @@ export const HomePage = () => {
             <li>
               <ConfirmDocumentLink href="http://leg.colorado.gov/sites/default/files/2021a_1225_signed.pdf">
                 Senate Bill 21-1225 <OpenInNewWindowIcon className="inline" />
+              </ConfirmDocumentLink>
+            </li>
+            <li>
+              <ConfirmDocumentLink href="https://leg.colorado.gov/bill_files/43671/download" doctype="pdf">
+                Senate Bill 24-1269 <OpenInNewWindowIcon className="inline" />
               </ConfirmDocumentLink>
             </li>
           </ol>

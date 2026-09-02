@@ -11,14 +11,16 @@ interface Props {
    href: string
    variant?: 'link'|'download'
    children?: ReactNode
+   doctype?: 'pdf'|'doc'|'docx'
 }
-export const ConfirmDocumentLink = ({href, variant='link', children}:Props) => {
+export const ConfirmDocumentLink = ({href, variant='link', children, doctype}:Props) => {
   const u = new URL(href)
   const pathname = u.pathname
   const filename = decodeURIComponent(pathname.split('/',-1).pop() || pathname)
   children = children || filename
 
-  const ext = pathname.split('.',-1).pop() || ''
+  const dotIndex = filename.lastIndexOf('.')
+  const ext = dotIndex >= 0 ? filename.slice(dotIndex + 1) : (doctype || '')
   const {type, icon, reader} = {
     'pdf': {type: 'an Adobe PDF', reader: 'Adobe Reader', icon: pdfIcon},
     'doc': {type: 'a Microsoft Word', reader: 'Microsoft Word', icon: wordIcon},
