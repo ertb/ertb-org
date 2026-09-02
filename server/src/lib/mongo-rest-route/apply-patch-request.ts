@@ -29,9 +29,8 @@ const getPatchTarget = (o:PatchTarget, keys:string|string[]):PatchTarget|undefin
 }
 
 const idEquals = (a:string|ObjectId, b:string|ObjectId) => {
-  if (typeof a != typeof b) return false
-  if (typeof a == 'string') return a == b
-  return a.toHexString() == (b as ObjectId).toHexString()
+  const toHexString = (id:string|ObjectId) => typeof id == 'string' ? id : id.toHexString()
+  return toHexString(a) == toHexString(b)
 }
 
 export const applyPatchRequest = (origObject:PatchTarget, req:Request) => {
@@ -78,11 +77,11 @@ export const applyPatchRequest = (origObject:PatchTarget, req:Request) => {
     })
   } else {
     // JSON Patch
-    const patch = JSON.parse(req.body)
+    const patch = req.body
     if (!validatePatchSchema(req.body)) {
       throw new ValidationError(ajv.errors)
     }
-    newObject = applyPatch(origObject, patch).newDocument
+    newObject = applyPatch(origObject, patch, false, false).newDocument
   }
 
   if (!idEquals(origObject._id, newObject._id)) {

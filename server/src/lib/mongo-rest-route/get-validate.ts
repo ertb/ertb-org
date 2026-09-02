@@ -49,7 +49,7 @@ export const getValidate = <T extends object>(schema:JSONSchemaType<T>, options:
       delete payload[dateFields.lastModified]
       delete payload[dateFields.deleted]
     }
-    const valid = ajv.validate(schema, payload)
+    const valid = ajv.validate(isUpdate ? dateSchema : schema, payload)
     if (!valid) {
       if (isUpdate)
         console.log('dateSchema:', JSON.stringify(dateSchema, null, 2))

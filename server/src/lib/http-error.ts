@@ -26,8 +26,9 @@ export default HTTPError
  */
 
 export function toName (code: number) {
-  const suffix = (code >= 400 && code < 600) ? 'Error' : ''
-  return ((STATUS_CODES[code] || 'Undefined') + suffix).replace(' ', '')
+  const name = (STATUS_CODES[code] || 'Undefined').replace(/ /g, '')
+  const suffix = (code >= 400 && code < 600 && !name.endsWith('Error')) ? 'Error' : ''
+  return name + suffix
 }
 
 /**
@@ -85,6 +86,7 @@ export const ErrorHandler = (error:Error, _req:Request, res:Response, next: Next
   if (res.headersSent) return next(error)
   if (error instanceof HTTPError) {
     res.status(error.statusCode).send({error: error.message})
+    return
   }
   console.error(`Unexpected Error: ${error}`)
   if (error.stack) console.error(error.stack)

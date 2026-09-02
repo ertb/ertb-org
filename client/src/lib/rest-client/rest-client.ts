@@ -31,7 +31,7 @@ const put = <T>(input:string|URL|Request, payload: unknown, options?:RequestInit
   return post<T>(input, payload, {method: 'PUT', ...options})
 }
 
-const patch = <T>(input:string|URL|Request, payload?: JSONPatch[], options?:RequestInit) => {
+const patch = <T>(input:string|URL|Request, payload?: JSONPatch, options?:RequestInit) => {
   return post<T>(input, payload, {method: 'PATCH', ...options})
 }
 

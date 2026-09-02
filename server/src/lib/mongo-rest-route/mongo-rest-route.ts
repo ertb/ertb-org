@@ -141,7 +141,7 @@ export const MongoRestRouter = <T extends object>(collection:string, schema:JSON
       /* ----------------------------------------
        * GET /archive/:id - retrieve a deleted entry
        * ----------------------------------------*/
-      router.get(`/archive/${idPath}`, async (req:Request, res:Response)=>{
+      router.get(`/archive${idPath}`, async (req:Request, res:Response)=>{
         const c = req.db.collection<HasId>(collection)
         const criteria = {'_id': idCriteria(req.params.id)}
         ;(criteria as {[key:string]:any})[dateFields.deleted] = { "$exists" : true }
@@ -207,7 +207,7 @@ export const MongoRestRouter = <T extends object>(collection:string, schema:JSON
         if (!noManagedDates) {
           (criteria as {[key:string]:any})[dateFields.deleted] = { "$exists" : false }
         }
-        const result = await c.updateOne(criteria, payload)
+        const result = await c.replaceOne(criteria, payload)
         if (result.modifiedCount == 0) {
           res.status(404).send({error: NotFoundMessage})
           return
@@ -277,7 +277,7 @@ export const MongoRestRouter = <T extends object>(collection:string, schema:JSON
     })
 
     if (!noArchive || noManagedDates) {
-      router.delete(`/archive/${idPath}`, async (_req:Request, res:Response)=>{
+      router.delete(`/archive${idPath}`, async (_req:Request, res:Response)=>{
        // TODO: implement delete from archive
         res.status(501).send({error: 'Archive not yet implemented'})
       })
