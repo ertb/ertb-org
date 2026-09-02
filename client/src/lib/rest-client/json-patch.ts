@@ -1,7 +1,7 @@
 type addReplaceTestOp = {
     "op": 'add'|'replace'|'test',
     "path": string
-    "value": any
+    "value": unknown
 }
 type removeOp = {
     "op": 'add'|'replace'|'test',

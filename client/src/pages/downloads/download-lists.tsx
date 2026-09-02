@@ -16,7 +16,7 @@ export const DownloadLists = () => {
       <div className="list flex flex-wrap justify-center gap-8">
         {Object.entries(lists).map(([title, tag]) => (
           <>
-            <a id={tag} />
+            <div id={tag} />
             <DocumentList key={title} title={<h2>{title}</h2>} tag={tag} all />
           </>
         ))}

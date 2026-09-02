@@ -32,13 +32,11 @@ export const useGet = <T>(input:string|URL|Request, options?:UseFetchOptions) =>
     const {errorHandler, onPreFetch} = options || {}
     const controller = new AbortController()
     const headers = {'accept': 'application/json', ...options?.headers}
-    let init = {...(options||{}), headers, signal: controller.signal} as RequestInit
-    delete (init as any).errorHandler
+    const baseInit = {...(options||{}), headers, signal: controller.signal} as RequestInit
+    delete (baseInit as Record<string, unknown>).errorHandler
 
-    if (onPreFetch) {
-      [input, init] = onPreFetch(input, init)
-    }
-    fetch(input, init)
+    const [fetchInput, fetchInit] = onPreFetch ? onPreFetch(input, baseInit) : [input, baseInit]
+    fetch(fetchInput, fetchInit)
     .then(res=>{
       if (!res.ok) throw new Error(`Unexpected server error: ${res.status} ${res.statusText}`)
       return res.json()

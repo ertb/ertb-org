@@ -14,13 +14,13 @@ interface Context {
   useAuthGet: typeof useGet
 }
 const AuthRestClientContext = createContext({
-  authGet: ()=>{toast('authGet not provided'); return {} as any},
-  authPost: ()=>{toast('authPost not provided'); return {} as any},
-  authPut: ()=>{toast('authPut not provided'); return {} as any},
-  authPatch: ()=>{toast('authPatch not provided'); return {} as any},
-  authDelete: ()=>{toast('authDelete not provided'); return {} as any},
+  authGet: ()=>{toast('authGet not provided'); return {} as unknown},
+  authPost: ()=>{toast('authPost not provided'); return {} as unknown},
+  authPut: ()=>{toast('authPut not provided'); return {} as unknown},
+  authPatch: ()=>{toast('authPatch not provided'); return {} as unknown},
+  authDelete: ()=>{toast('authDelete not provided'); return {} as unknown},
 
-  useAuthGet: ()=>{toast('useAuthGet not provided'); return {} as any},
+  useAuthGet: ()=>{toast('useAuthGet not provided'); return {} as unknown},
 } as Context)
 
 interface Props {

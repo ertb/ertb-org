@@ -12,6 +12,8 @@ export const DebouncedInput = <T extends ElementType = "input">({as, delay=750, 
   const As = as || Input
   throw new Error('DebouncedInput not yet working - value change loop!!!')
 
+  // unreachable WIP code below (guarded by the throw above until the value-change loop is fixed)
+  /* eslint-disable react-hooks/rules-of-hooks */
   const [inputValue, setInputValue] = useState(value)
   const [debouncedValue, setDebouncedValue] = useDebounceValue(inputValue, delay)
   const lastEvent = useRef<ChangeEvent<HTMLInputElement>|undefined>()

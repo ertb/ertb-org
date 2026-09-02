@@ -84,7 +84,10 @@ const FileItem = ({ file, onDelete }: FileItemProps) => {
         }
         toast.error(`Couldn't rename file`);
       });
-  }, [debouncedFilename, filename]);
+    // authPatch is intentionally omitted: auth-rest-client-context recreates it on every render
+    // (it isn't memoized), so including it would re-fire this effect on unrelated re-renders.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedFilename, filename, file, toast]);
 
   const changeTag = (newTag: string) => {
     setTag(newTag);

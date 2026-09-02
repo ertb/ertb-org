@@ -80,10 +80,15 @@ const MemberItem = ({member, onDelete}:MemberItemProps) => {
       toast.error(`Couldn't update member`)
     })
   }
+  // applyDelayedChange is intentionally omitted from these deps: it's a plain function
+  // recreated on every render (not memoized), so including it would re-fire all four effects
+  // on every keystroke in any field, risking duplicate PATCH calls while one is in flight.
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(()=>{applyDelayedChange('name', db_name)}, [db_name, member.name])
   useEffect(()=>{applyDelayedChange('title', db_title)}, [db_title, member.title])
   useEffect(()=>{applyDelayedChange('details', db_details)}, [db_details, member.details])
   useEffect(()=>{applyDelayedChange('tag', db_tag)}, [db_tag, member.tag])
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   const deleteMember = () => {
     authDelete(`/api/v1/members/${member._id}`)

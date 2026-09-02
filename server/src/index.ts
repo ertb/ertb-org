@@ -13,7 +13,7 @@ signingKeyRotation(process.env.JWKS_ROTATION_TIME)
 const app = express()
 
 // force SSL for Heroku proxy
-var forceSSL = function (req:Request, res:Response, next:NextFunction) {
+const forceSSL = function (req:Request, res:Response, next:NextFunction) {
   if (req.headers['x-forwarded-proto'] == 'http') {
     return res.redirect('https://' + req.get('Host') + req.url)
   }

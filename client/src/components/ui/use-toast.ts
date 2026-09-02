@@ -170,7 +170,7 @@ function toast(props: Toast | React.ReactNode) {
   }
 }
 
-type ToastElement = string | (string & React.ReactElement<any, string | React.JSXElementConstructor<any>>) | (string & Iterable<React.ReactNode>) | (string & React.ReactPortal)
+type ToastElement = string | (string & React.ReactElement) | (string & Iterable<React.ReactNode>) | (string & React.ReactPortal)
 toast.error = (title:ToastElement, description?:ToastElement) => {
   toast({title, description, variant: 'destructive'})
 }

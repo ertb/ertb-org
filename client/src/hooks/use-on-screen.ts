@@ -28,7 +28,7 @@ export const useOnScreen = (selectors='section', offset=0) => {
     
     // Remove the listener as soon as the component is unmounted
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [scrollY])
+  }, [offset, selectors])
   
   return current
 }
