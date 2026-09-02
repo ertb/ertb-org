@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { Router, json } from 'express'
 import { userprofile } from './userprofile'
 import { MongoRestRouter } from '../../../lib/mongo-rest-route'
 import { memberSchema } from '../../../model/members'
@@ -9,6 +9,8 @@ import { checkUser } from '../check-user'
 import { userSchema } from '../../../model/users'
 import { messageSchema } from '../../../model/messages'
 import { clientConfig } from './client-config'
+import { getAbout, putAbout } from './about'
+import { withDb } from '../../../lib/mongo-rest-route/with-db'
 
 const router = Router()
 export const v1 = router
@@ -22,11 +24,13 @@ router.get('/userprofile', userprofile)
 router.use('/files', MongoRestRouter('files', fileSchema, {methods:['GET'], sort: sortNewest}))
 router.use('/members', MongoRestRouter('members', memberSchema, {methods:['GET'], sort: sortOrder}))
 router.post('/messages', postMessage)
+router.get('/about', withDb, getAbout)
 
 // admin
 router.use('/users', checkUser('admin'), MongoRestRouter('users', userSchema))
 router.use('/members', checkUser('admin'), MongoRestRouter('members', memberSchema, {methods: ['POST', 'PUT', 'PATCH', 'DELETE']}))
 router.use('/messages', checkUser('admin'), MongoRestRouter('messages', messageSchema, {methods:['GET', 'DELETE'], sort: sortNewest}))
+router.put('/about', checkUser('admin'), json(), putAbout)
 
 // since files also needs to manage s3 we can't use MongoRestRouter directly
 router.use('/files', checkUser('admin'), uploadFilesRouter) // POST, PATCH, and DELETE

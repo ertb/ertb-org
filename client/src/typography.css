@@ -69,12 +69,12 @@ section li {
 
 section ul {
   margin-left: 2rem;
-  list-style-type: decimal;
+  list-style-type: disc;
   margin-bottom: rem;
 }
 section ol {
   margin-left: 2rem;
-  list-style-type: disc;
+  list-style-type: decimal;
 }
 nav a,
 section button.link,

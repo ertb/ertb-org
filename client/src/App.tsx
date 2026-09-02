@@ -6,6 +6,7 @@ import { DownloadsPage } from './pages/downloads/downloads'
 import { Members } from './pages/admin/members'
 import { Files } from './pages/admin/files'
 import { Messages } from './pages/admin/messages'
+import { About } from './pages/admin/about'
 import { NotFound } from './components/not-found'
 import { Users } from './pages/admin/users'
 import { ClientConfigProvider } from './contexts/client-config-context'
@@ -20,6 +21,7 @@ function App() {
           <Route path='admin' element={<AdminPage/>}>
             <Route path='' element={<Navigate to="files" replace/>}/>
             <Route path='files' element={<Files/>}/>
+            <Route path='about' element={<About/>}/>
             <Route path='members' element={<Members/>}/>
             <Route path='messages' element={<Messages/>}/>
             <Route path='users' element={<Users/>}/>

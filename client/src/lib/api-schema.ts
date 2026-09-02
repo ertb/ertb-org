@@ -50,6 +50,10 @@ export interface UsersResponse {
   users: UsersEntry[]
 }
 
+export interface AboutResponse {
+  markdown: string
+}
+
 export interface ConfigResponse {
   version: string
   commit: string

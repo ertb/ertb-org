@@ -8,6 +8,7 @@ import { Outlet } from "react-router-dom"
 const Inner = () => {
   const {logout, profile} = useUserProfile()
   const links = profile  && profile.role == 'admin' ? {
+    "About": '/admin/about',
     "Files": '/admin/files',
     "Members": '/admin/members',
     "Messages": '/admin/messages',

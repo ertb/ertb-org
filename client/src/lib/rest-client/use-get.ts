@@ -43,10 +43,16 @@ export const useGet = <T>(input:string|URL|Request, options?:UseFetchOptions) =>
     })
     .then((json:T) => setData(json))
     .catch((err:Error) => {
+      // this request was superseded (eg. React StrictMode's double-invoke, or input/options
+      // changing before the previous fetch resolved) - a newer effect run owns the state now
+      if (controller.signal.aborted) return
       if (errorHandler) errorHandler(err)
       setError(err)
     })
-    .finally(() => setLoading(false))
+    .finally(() => {
+      if (controller.signal.aborted) return
+      setLoading(false)
+    })
 
     return () => controller.abort()
   }, [input, options, refreshFlag])
