@@ -48,12 +48,14 @@ export const ConfirmDocumentLink = ({href, variant='link', children, doctype}:Pr
         </DialogTitle>
       </DialogHeader>
 
-      <DialogDescription>
-        <div className='mb-2 text-gray-500'><b>{filename}</b></div>
-        <img className='h-20 float-right' src={icon} alt={`${type} icon`}/>
-        <div className='mb-2'>This is a link to {type} document.</div>
-        <div className='mb-2'> Depending on your browser support, this may show a file reader or download the document.</div>
-        <div>If the file is downloaded, you can view it using <b>{reader}</b>.</div>
+      <DialogDescription asChild>
+        <div>
+          <div className='mb-2 text-gray-500'><b>{filename}</b></div>
+          <img className='h-20 float-right' src={icon} alt={`${type} icon`}/>
+          <div className='mb-2'>This is a link to {type} document.</div>
+          <div className='mb-2'> Depending on your browser support, this may show a file reader or download the document.</div>
+          <div>If the file is downloaded, you can view it using <b>{reader}</b>.</div>
+        </div>
       </DialogDescription>
 
       <DialogFooter>
