@@ -18,6 +18,11 @@ export const About = () => {
 
   const initialMarkdown = data ? data.markdown : error ? fallbackMarkdown : undefined;
 
+  const discard = () => {
+    setMarkdown(undefined);
+    setDirty(false);
+  };
+
   const save = () => {
     if (markdown === undefined) return;
     setSaving(true);
@@ -53,6 +58,7 @@ export const About = () => {
             setDirty(true);
           }}
           onSave={save}
+          onDiscard={discard}
           dirty={dirty}
           saving={saving}
         />

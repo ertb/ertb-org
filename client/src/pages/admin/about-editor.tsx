@@ -1,4 +1,4 @@
-import { KeyboardEvent, useCallback, useState } from "react";
+import { KeyboardEvent, useCallback, useRef, useState } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Editor } from "@tiptap/core";
@@ -15,6 +15,7 @@ import {
   Link as LinkIcon,
   List,
   ListOrdered,
+  Undo2,
   Unlink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -66,14 +67,21 @@ interface Props {
   initialMarkdown: string;
   onChange: (markdown: string) => void;
   onSave: () => void;
+  onDiscard: () => void;
   dirty: boolean;
   saving: boolean;
 }
-export const AboutEditor = ({ initialMarkdown, onChange, onSave, dirty, saving }: Props) => {
+export const AboutEditor = ({ initialMarkdown, onChange, onSave, onDiscard, dirty, saving }: Props) => {
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
   const [linkText, setLinkText] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
+  const [discardDialogOpen, setDiscardDialogOpen] = useState(false);
   const autoFocus = useCallback((e: HTMLInputElement | null) => { if (e) e.focus() }, []);
+  // StarterKit's trailingNode extension silently appends an empty paragraph the first
+  // time a transaction is dispatched (e.g. just clicking in) if the doc ends in a list or
+  // heading -- that alone shouldn't count as an edit, so compare against the markdown as
+  // serialized right after load rather than trusting docChanged.
+  const lastMarkdownRef = useRef(initialMarkdown);
 
   const editor = useEditor({
     extensions: [
@@ -106,14 +114,18 @@ export const AboutEditor = ({ initialMarkdown, onChange, onSave, dirty, saving }
         "aria-label": "About section content",
       },
     },
+    onCreate: ({ editor }) => {
+      lastMarkdownRef.current = getMarkdown(editor);
+    },
     onUpdate: ({ editor }) => {
-      onChange(getMarkdown(editor));
+      const markdown = getMarkdown(editor);
+      if (markdown === lastMarkdownRef.current) return;
+      lastMarkdownRef.current = markdown;
+      onChange(markdown);
     },
   });
 
   if (!editor) return null;
-
-  const canLink = !editor.state.selection.empty || editor.isActive("link");
 
   const openLinkDialog = () => {
     // widen the selection to the whole link so its full text is editable, not just where the cursor is
@@ -148,6 +160,20 @@ export const AboutEditor = ({ initialMarkdown, onChange, onSave, dirty, saving }
       e.preventDefault();
       applyLink();
     }
+  };
+
+  const confirmDiscard = () => {
+    const scrollY = window.scrollY;
+    // emitUpdate: false so this reset doesn't get reported back through onChange as a new edit.
+    // setContent maps the old (possibly mid-edit) cursor position into the reverted doc, and
+    // focusing there was scrolling the page to an unrelated spot -- reset the selection to the
+    // start instead, and restore the page's scroll position so discarding doesn't move the
+    // viewport at all.
+    editor.chain().setContent(initialMarkdown, { emitUpdate: false }).setTextSelection(0).run();
+    window.scrollTo({ top: scrollY });
+    lastMarkdownRef.current = getMarkdown(editor);
+    onDiscard();
+    setDiscardDialogOpen(false);
   };
 
   return (
@@ -198,12 +224,11 @@ export const AboutEditor = ({ initialMarkdown, onChange, onSave, dirty, saving }
         <ToolbarButton
           label="Link"
           title={
-            canLink
-              ? editor.isActive("link") ? "Edit link" : "Add link"
-              : "Select text or place the cursor inside a link to add or edit one"
+            editor.isActive("link")
+              ? "Edit link"
+              : editor.state.selection.empty ? "Insert link" : "Add link"
           }
           active={editor.isActive("link")}
-          disabled={!canLink}
           onClick={openLinkDialog}
         >
           <LinkIcon className="h-4 w-4" />
@@ -217,9 +242,18 @@ export const AboutEditor = ({ initialMarkdown, onChange, onSave, dirty, saving }
           <Unlink className="h-4 w-4" />
         </ToolbarButton>
         <div className="ml-auto flex items-center gap-3 pr-1">
-          <div role="status" aria-live="polite" className="text-sm text-gray-500">
-            {dirty ? "Unsaved changes" : ""}
-          </div>
+          {dirty && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setDiscardDialogOpen(true)}
+              disabled={saving}
+            >
+              <Undo2 className="mr-2 h-4 w-4" />
+              Discard changes
+            </Button>
+          )}
           <Button type="button" size="sm" onClick={onSave} disabled={saving || !dirty}>
             {saving ? "Saving…" : "Save"}
           </Button>
@@ -263,6 +297,25 @@ export const AboutEditor = ({ initialMarkdown, onChange, onSave, dirty, saving }
           <DialogFooter>
             <Button type="button" onClick={applyLink} disabled={!linkText.trim()}>
               Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={discardDialogOpen} onOpenChange={setDiscardDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Discard changes?</DialogTitle>
+            <DialogDescription>
+              This will discard your unsaved changes and restore the last saved version. This can&apos;t be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setDiscardDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="button" variant="destructive" onClick={confirmDiscard}>
+              Discard changes
             </Button>
           </DialogFooter>
         </DialogContent>
