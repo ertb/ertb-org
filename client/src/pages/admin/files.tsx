@@ -13,17 +13,7 @@ import { useUserProfile } from "@/contexts/user-login-context";
 import { useEffect, useState } from "react";
 import { useDebounceValue } from "usehooks-ts";
 import { RestClientResponseError } from "@/lib/rest-client/rest-client";
-
-const fileTags = [
-  { value: "agenda", label: "Agenda" },
-  { value: "reports", label: "Reports" },
-  { value: "minutes", label: "Minutes" },
-  { value: "financials", label: "Financials" },
-  { value: "grants", label: "Grants" },
-  { value: "rfp", label: "RFP" },
-  { value: "cyber", label: "Cyber Security" },
-  { value: "hidden", label: "Hidden" },
-];
+import { fileTags, getFilename } from "@/lib/files";
 
 interface FilesPatchResponse {
   modifiedCount: number;
@@ -34,12 +24,6 @@ interface FileItemProps {
   file: FilesEntry;
   onDelete?: (file: FilesEntry) => void;
 }
-
-const getFilename = (file: FilesEntry) => {
-  const n = new URL(file.url).pathname.split("/");
-  const filename = decodeURIComponent(n[n.length - 1]);
-  return filename;
-};
 
 const FileItem = ({ file, onDelete }: FileItemProps) => {
   const { authPatch, authDelete } = useAuthRestClient();

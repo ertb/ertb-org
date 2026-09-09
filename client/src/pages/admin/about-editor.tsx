@@ -28,6 +28,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FileLinkPicker } from "./file-link-picker";
+import { FilesEntry } from "@/lib/api-schema";
+import { getFilename } from "@/lib/files";
 import { cn } from "@/lib/utils";
 
 interface ToolbarButtonProps {
@@ -75,6 +79,7 @@ export const AboutEditor = ({ initialMarkdown, onChange, onSave, onDiscard, dirt
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
   const [linkText, setLinkText] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
+  const [linkTab, setLinkTab] = useState<"external" | "files">("external");
   const [discardDialogOpen, setDiscardDialogOpen] = useState(false);
   const autoFocus = useCallback((e: HTMLInputElement | null) => { if (e) e.focus() }, []);
   // StarterKit's trailingNode extension silently appends an empty paragraph the first
@@ -133,7 +138,13 @@ export const AboutEditor = ({ initialMarkdown, onChange, onSave, onDiscard, dirt
     const { from, to } = editor.state.selection;
     setLinkText(editor.state.doc.textBetween(from, to, " "));
     setLinkUrl(editor.getAttributes("link").href || "");
+    setLinkTab("external");
     setLinkDialogOpen(true);
+  };
+
+  const selectLinkFile = (file: FilesEntry) => {
+    setLinkUrl(file.url);
+    if (!linkText.trim()) setLinkText(getFilename(file));
   };
 
   const applyLink = () => {
@@ -283,16 +294,25 @@ export const AboutEditor = ({ initialMarkdown, onChange, onSave, onDiscard, dirt
                 onKeyDown={onLinkDialogKeyDown}
               />
             </div>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="link-url" className="text-sm text-gray-500">URL</label>
-              <Input
-                id="link-url"
-                value={linkUrl}
-                onChange={(e) => setLinkUrl(e.target.value)}
-                placeholder="https://example.com"
-                onKeyDown={onLinkDialogKeyDown}
-              />
-            </div>
+            <Tabs value={linkTab} onValueChange={(v) => setLinkTab(v as "external" | "files")}>
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="external">External Link</TabsTrigger>
+                <TabsTrigger value="files">Files</TabsTrigger>
+              </TabsList>
+              <TabsContent value="external" className="flex flex-col gap-1">
+                <label htmlFor="link-url" className="text-sm text-gray-500">URL</label>
+                <Input
+                  id="link-url"
+                  value={linkUrl}
+                  onChange={(e) => setLinkUrl(e.target.value)}
+                  placeholder="https://example.com"
+                  onKeyDown={onLinkDialogKeyDown}
+                />
+              </TabsContent>
+              <TabsContent value="files">
+                <FileLinkPicker selectedUrl={linkUrl} onSelect={selectLinkFile} />
+              </TabsContent>
+            </Tabs>
           </div>
           <DialogFooter>
             <Button type="button" onClick={applyLink} disabled={!linkText.trim()}>
