@@ -1,4 +1,5 @@
-import { KeyboardEvent, useCallback, useRef, useState } from "react";
+import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useBlocker } from "react-router-dom";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Editor } from "@tiptap/core";
@@ -30,8 +31,9 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileLinkPicker } from "./file-link-picker";
-import { FilesEntry } from "@/lib/api-schema";
+import { FilesResponse, FilesEntry } from "@/lib/api-schema";
 import { getFilename } from "@/lib/files";
+import { useGet } from "@/lib/rest-client/use-get";
 import { cn } from "@/lib/utils";
 
 interface ToolbarButtonProps {
@@ -81,7 +83,21 @@ export const AboutEditor = ({ initialMarkdown, onChange, onSave, onDiscard, dirt
   const [linkUrl, setLinkUrl] = useState("");
   const [linkTab, setLinkTab] = useState<"external" | "files">("external");
   const [discardDialogOpen, setDiscardDialogOpen] = useState(false);
+  const { data: filesData, loading: filesLoading, refresh: refreshFiles } = useGet<FilesResponse>("/api/v1/files?limit=0");
   const autoFocus = useCallback((e: HTMLInputElement | null) => { if (e) e.focus() }, []);
+
+  // block in-app navigation away from unsaved changes
+  const blocker = useBlocker(dirty);
+  // block closing/reloading/navigating the tab itself (browser-controlled, unstyled prompt)
+  useEffect(() => {
+    if (!dirty) return;
+    const onBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [dirty]);
   // StarterKit's trailingNode extension silently appends an empty paragraph the first
   // time a transaction is dispatched (e.g. just clicking in) if the doc ends in a list or
   // heading -- that alone shouldn't count as an edit, so compare against the markdown as
@@ -136,9 +152,11 @@ export const AboutEditor = ({ initialMarkdown, onChange, onSave, onDiscard, dirt
     // widen the selection to the whole link so its full text is editable, not just where the cursor is
     if (editor.isActive("link")) editor.chain().focus().extendMarkRange("link").run();
     const { from, to } = editor.state.selection;
+    const href = editor.getAttributes("link").href || "";
     setLinkText(editor.state.doc.textBetween(from, to, " "));
-    setLinkUrl(editor.getAttributes("link").href || "");
-    setLinkTab("external");
+    setLinkUrl(href);
+    const isFileLink = !!href && filesData?.files.some((f) => f.url === href);
+    setLinkTab(isFileLink ? "files" : "external");
     setLinkDialogOpen(true);
   };
 
@@ -281,19 +299,9 @@ export const AboutEditor = ({ initialMarkdown, onChange, onSave, onDiscard, dirt
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Link</DialogTitle>
-            <DialogDescription>Set the link text and the URL it points to.</DialogDescription>
+            <DialogDescription>Link to an external URL or an uploaded file.</DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-1">
-              <label htmlFor="link-text" className="text-sm text-gray-500">Text</label>
-              <Input
-                id="link-text"
-                ref={autoFocus}
-                value={linkText}
-                onChange={(e) => setLinkText(e.target.value)}
-                onKeyDown={onLinkDialogKeyDown}
-              />
-            </div>
             <Tabs value={linkTab} onValueChange={(v) => setLinkTab(v as "external" | "files")}>
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="external">External Link</TabsTrigger>
@@ -303,6 +311,7 @@ export const AboutEditor = ({ initialMarkdown, onChange, onSave, onDiscard, dirt
                 <label htmlFor="link-url" className="text-sm text-gray-500">URL</label>
                 <Input
                   id="link-url"
+                  ref={autoFocus}
                   value={linkUrl}
                   onChange={(e) => setLinkUrl(e.target.value)}
                   placeholder="https://example.com"
@@ -310,9 +319,25 @@ export const AboutEditor = ({ initialMarkdown, onChange, onSave, onDiscard, dirt
                 />
               </TabsContent>
               <TabsContent value="files">
-                <FileLinkPicker selectedUrl={linkUrl} onSelect={selectLinkFile} />
+                <FileLinkPicker
+                  data={filesData}
+                  loading={filesLoading}
+                  selectedUrl={linkUrl}
+                  onSelect={selectLinkFile}
+                  onUploaded={refreshFiles}
+                  inputRef={autoFocus}
+                />
               </TabsContent>
             </Tabs>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="link-text" className="text-sm text-gray-500">Text</label>
+              <Input
+                id="link-text"
+                value={linkText}
+                onChange={(e) => setLinkText(e.target.value)}
+                onKeyDown={onLinkDialogKeyDown}
+              />
+            </div>
           </div>
           <DialogFooter>
             <Button type="button" onClick={applyLink} disabled={!linkText.trim()}>
@@ -340,6 +365,27 @@ export const AboutEditor = ({ initialMarkdown, onChange, onSave, onDiscard, dirt
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {blocker.state === "blocked" && (
+        <Dialog open onOpenChange={(open) => { if (!open) blocker.reset(); }}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Leave without saving?</DialogTitle>
+              <DialogDescription>
+                You have unsaved changes. If you leave this page now, they will be lost.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => blocker.reset()}>
+                Stay
+              </Button>
+              <Button type="button" variant="destructive" onClick={() => blocker.proceed()}>
+                Leave without saving
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

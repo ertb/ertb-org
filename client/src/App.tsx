@@ -1,5 +1,5 @@
 import { Toaster } from '@/components/ui/toaster'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { HomePage } from './pages/home/home'
 import { AdminPage } from './pages/admin/admin'
 import { DownloadsPage } from './pages/downloads/downloads'
@@ -11,24 +11,30 @@ import { NotFound } from './components/not-found'
 import { Users } from './pages/admin/users'
 import { ClientConfigProvider } from './contexts/client-config-context'
 
+// a data router is required for useBlocker (used by the About editor to block navigation
+// away from unsaved changes)
+const router = createBrowserRouter([
+  { path: '/', element: <HomePage/> },
+  { path: 'downloads', element: <DownloadsPage/> },
+  {
+    path: 'admin',
+    element: <AdminPage/>,
+    children: [
+      { index: true, element: <Navigate to="files" replace/> },
+      { path: 'files', element: <Files/> },
+      { path: 'about', element: <About/> },
+      { path: 'members', element: <Members/> },
+      { path: 'messages', element: <Messages/> },
+      { path: 'users', element: <Users/> },
+    ],
+  },
+  { path: '*', element: <NotFound/> },
+])
+
 function App() {
   return (
     <ClientConfigProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<HomePage/>}/>
-          <Route path='downloads' element={<DownloadsPage/>}/>
-          <Route path='admin' element={<AdminPage/>}>
-            <Route path='' element={<Navigate to="files" replace/>}/>
-            <Route path='files' element={<Files/>}/>
-            <Route path='about' element={<About/>}/>
-            <Route path='members' element={<Members/>}/>
-            <Route path='messages' element={<Messages/>}/>
-            <Route path='users' element={<Users/>}/>
-          </Route>
-          <Route path='*' element={<NotFound/>}/>
-        </Routes>
-      </BrowserRouter>
+      <RouterProvider router={router}/>
       <Toaster/>
     </ClientConfigProvider>
   )
