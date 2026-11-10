@@ -68,9 +68,11 @@ describe('checkUser', () => {
 
   it('should reject when the user does not have the required role', async () => {
     const userId = await seedUser('user')
-    app.get('/protected', checkUser('admin'), (_req, res) => res.send({ok: true}))
+    const handler = jest.fn((_req: express.Request, res: express.Response) => { res.send({ok: true}) })
+    app.get('/protected', checkUser('admin'), handler)
     const res = await request(app).get('/protected').set('Authorization', await authHeader(userId))
     expect(res.status).toBe(403)
+    expect(handler).not.toHaveBeenCalled()
   })
 
   it('should allow access when the token identifies a user with the required role', async () => {

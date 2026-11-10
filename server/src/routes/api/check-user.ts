@@ -44,6 +44,7 @@ export const checkUser = (role?:string) => async (req: Request, res: Response, n
   if (user.role != role) {
     console.warn('User is not authorized')
     res.status(403).send({error: 'User is not authorized'})
+    return
   }
   next()
 }
