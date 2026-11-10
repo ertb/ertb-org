@@ -59,7 +59,7 @@
     "@types/react-dom": "^18.2.19",
     "@types/react-scroll": "^1.8.10",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
-    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/coverage-v8": "^4.1.12",
     "eslint": "^8.57.0",
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-react-hooks": "^4.6.0",
@@ -70,7 +70,7 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5.2.2",
     "vite": "^8.2.2",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.12"
   },
   "resolutions": {
     "@typescript-eslint/typescript-estree": "^7.1.1"
