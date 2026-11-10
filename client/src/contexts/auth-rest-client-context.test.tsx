@@ -102,4 +102,70 @@ describe('AuthRestClientProvider', () => {
     const result = await captured.authDelete<{deletedCount: number}>('/api/widgets/1')
     expect(result).toEqual({deletedCount: 1})
   })
+
+  describe('retry on 401', () => {
+    const mockRefreshProfile = vi.fn()
+    beforeEach(() => mockRefreshProfile.mockReset())
+    const withRefreshableProfile = (authorization: string) =>
+      mockUseUserProfile.mockReturnValue({profile: {authorization}, refreshProfile: mockRefreshProfile})
+
+    it('should refresh the token and retry once when a request gets a 401', async () => {
+      withRefreshableProfile('Bearer stale')
+      mockRefreshProfile.mockResolvedValue({authorization: 'Bearer fresh'})
+      const seen: (string|null)[] = []
+      server.use(http.patch('/api/widgets/1', ({request}) => {
+        const auth = request.headers.get('authorization')
+        seen.push(auth)
+        return auth == 'Bearer fresh' ? HttpResponse.json({modifiedCount: 1}) : new HttpResponse(null, {status: 401})
+      }))
+      renderWithAuth()
+
+      const result = await captured.authPatch('/api/widgets/1', [])
+      expect(result).toEqual({modifiedCount: 1})
+      expect(seen).toEqual(['Bearer stale', 'Bearer fresh'])
+      expect(mockRefreshProfile).toHaveBeenCalledTimes(1)
+    })
+
+    it('should not retry when the refresh does not produce a new token', async () => {
+      withRefreshableProfile('Bearer stale')
+      mockRefreshProfile.mockResolvedValue({authorization: 'Bearer stale'})
+      let calls = 0
+      server.use(http.get('/api/widgets', () => { calls++; return new HttpResponse(null, {status: 401}) }))
+      renderWithAuth()
+
+      await expect(captured.authGet('/api/widgets')).rejects.toThrow('401')
+      expect(calls).toBe(1)
+    })
+
+    it('should not retry when the user must sign in again', async () => {
+      withRefreshableProfile('Bearer stale')
+      mockRefreshProfile.mockResolvedValue(undefined)
+      server.use(http.get('/api/widgets', () => new HttpResponse(null, {status: 401})))
+      renderWithAuth()
+
+      await expect(captured.authGet('/api/widgets')).rejects.toThrow('401')
+    })
+
+    it('should not refresh for other errors', async () => {
+      withRefreshableProfile('Bearer ok')
+      server.use(http.get('/api/widgets', () => new HttpResponse(null, {status: 500})))
+      renderWithAuth()
+
+      await expect(captured.authGet('/api/widgets')).rejects.toThrow('500')
+      expect(mockRefreshProfile).not.toHaveBeenCalled()
+    })
+
+    it('should retry other calls, like uploads, whose errors carry a 401 status', async () => {
+      withRefreshableProfile('Bearer stale')
+      mockRefreshProfile.mockResolvedValue({authorization: 'Bearer fresh'})
+      renderWithAuth()
+
+      const call = vi.fn(async (authorization?: string) => {
+        if (authorization != 'Bearer fresh') throw Object.assign(new Error('nope'), {status: 401})
+        return 'uploaded'
+      })
+      await expect(captured.withAuthRetry(call)).resolves.toBe('uploaded')
+      expect(call).toHaveBeenCalledTimes(2)
+    })
+  })
 })

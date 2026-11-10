@@ -1,5 +1,5 @@
 import { GoogleOAuthProvider, TokenResponse, googleLogout, useGoogleLogin } from "@react-oauth/google"
-import { ReactNode, createContext, useContext, useEffect, useState } from "react"
+import { ReactNode, createContext, useCallback, useContext, useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 import { useSessionStorage } from "usehooks-ts"
 import { useClientConfig } from "./client-config-context"
@@ -32,15 +32,24 @@ interface Context {
   login: ()=>void
   logout: ()=>void
   loading: boolean
+  /**
+   * Re-fetches the profile (and a new authorization token) using the stored Google credentials.
+   * Concurrent calls share one request, and calls within a few seconds of the last refresh return
+   * the current profile, so callers can't loop. Resolves to undefined if the user must sign in.
+   */
+  refreshProfile: ()=>Promise<Profile|undefined>
 }
 const UserLoginContext = createContext({
   profile: undefined,
   login: ()=>toast('Login not implemented'),
   logout: ()=>toast('Logout not implemented'),
   loading: false,
+  refreshProfile: async ()=>undefined,
 } as Context)
 
-const fetchUserProfile = (creds:Credentials, setProfile:(profile:Profile)=>void) => {
+const MIN_REFRESH_INTERVAL = 10_000 // ms
+
+const fetchUserProfile = (creds:Credentials, setProfile:(profile:Profile)=>void):Promise<Profile|undefined> => {
   const headers = {
     Authorization: `Bearer ${creds?.access_token}`,
     Accept: 'application/json',
@@ -51,9 +60,13 @@ const fetchUserProfile = (creds:Credentials, setProfile:(profile:Profile)=>void)
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
     return res.json()
   })
-  .then(setProfile)
+  .then((profile:Profile) => {
+    setProfile(profile)
+    return profile
+  })
   .catch((e)=>{
     console.error(e)
+    return undefined
   })
 }
 
@@ -112,7 +125,28 @@ const Inner = ({children}:Props) => {
     }
   }, [creds, profile])
 
-  const value:Context = { profile, login, logout, loading }
+  const profileRef = useRef(profile)
+  profileRef.current = profile
+  const refreshing = useRef<Promise<Profile|undefined>>()
+  const lastRefresh = useRef(0)
+
+  const refreshProfile = useCallback(() => {
+    if (refreshing.current) return refreshing.current
+    if (!creds || (creds.expires || 0) < Date.now()) return Promise.resolve(undefined)
+    if (Date.now() - lastRefresh.current < MIN_REFRESH_INTERVAL) return Promise.resolve(profileRef.current)
+
+    lastRefresh.current = Date.now()
+    refreshing.current = fetchUserProfile(creds, setProfile)
+      .then((refreshed) => {
+        // don't wait for a re-render; a throttled call right after this must see the new token
+        if (refreshed) profileRef.current = refreshed
+        return refreshed
+      })
+      .finally(() => { refreshing.current = undefined })
+    return refreshing.current
+  }, [creds])
+
+  const value:Context = { profile, login, logout, loading, refreshProfile }
   return (
     <UserLoginContext.Provider value={value}>{children}</UserLoginContext.Provider>
   )

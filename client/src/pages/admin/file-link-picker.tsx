@@ -16,7 +16,7 @@ import { FileDropZone } from "@/components/file-drop-zone/file-drop-zone";
 import { uploadFile } from "@/components/file-drop-zone/upload-file";
 import { rejectionMessage } from "@/components/file-drop-zone/rejection-message";
 import { useClientConfig } from "@/contexts/client-config-context";
-import { useUserProfile } from "@/contexts/user-login-context";
+import { useAuthRestClient } from "@/contexts/auth-rest-client-context";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -39,7 +39,7 @@ export const FileLinkPicker = ({ data, loading, selectedUrl, onSelect, onUploade
   });
   const [open, setOpen] = useState(false);
   const [uploadOpen, setUploadOpen] = useState(false);
-  const { profile } = useUserProfile();
+  const { withAuthRetry } = useAuthRestClient();
   const { maxUploadSize } = useClientConfig();
   const { toast } = useToast();
 
@@ -66,7 +66,7 @@ export const FileLinkPicker = ({ data, loading, selectedUrl, onSelect, onUploade
 
   const onDrop = (acceptedFiles: File[], fileRejections: FileRejection[]) => {
     acceptedFiles.forEach((f) =>
-      uploadFile<FilesEntry>(f, profile?.authorization)
+      withAuthRetry((authorization) => uploadFile<FilesEntry>(f, authorization))
         .then((file) => {
           toast.success("File uploaded", f.name);
           selectFile(file);

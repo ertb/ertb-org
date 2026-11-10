@@ -11,7 +11,6 @@ import { FileRejection } from "react-dropzone";
 import { DocumentLink } from "./document-link";
 import { useGet } from "@/lib/rest-client/use-get";
 import { useAuthRestClient } from "@/contexts/auth-rest-client-context";
-import { useUserProfile } from "@/contexts/user-login-context";
 import { useEffect, useState } from "react";
 import { useDebounceValue } from "usehooks-ts";
 import { RestClientResponseError } from "@/lib/rest-client/rest-client";
@@ -131,7 +130,7 @@ const FileItem = ({ file, onDelete }: FileItemProps) => {
 export const Files = () => {
   const { data } = useGet<FilesResponse>(`/api/v1/files?limit=0`);
   const { toast } = useToast();
-  const { profile } = useUserProfile();
+  const { withAuthRetry } = useAuthRestClient();
   const { maxUploadSize } = useClientConfig();
 
   const [x, setX] = useState(false);
@@ -141,7 +140,7 @@ export const Files = () => {
 
   const onDrop = (acceptedFiles: File[], fileRejections: FileRejection[]) => {
     acceptedFiles.forEach((f) =>
-      uploadFile<FilesEntry>(f, profile?.authorization)
+      withAuthRetry((authorization) => uploadFile<FilesEntry>(f, authorization))
         .then((res: FilesEntry) => {
           console.log("new file", res);
           if (data) {

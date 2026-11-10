@@ -28,7 +28,7 @@ export const uploadFile = async <T>(file:File, authorization:string='none') => {
   })
   if (!res.ok) {
     const body = await res.json().catch(() => undefined) as {error?:string}|undefined
-    throw new Error(body?.error || uploadErrorMessage(res.status))
+    throw Object.assign(new Error(body?.error || uploadErrorMessage(res.status)), {status: res.status})
   }
   return (await res.json()) as T
 }

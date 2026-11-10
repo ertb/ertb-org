@@ -15,6 +15,7 @@ vi.mock('@/contexts/auth-rest-client-context', () => ({
     authPatch: mockAuthPatch,
     authDelete: mockAuthDelete,
     useAuthGet: vi.fn(),
+    withAuthRetry: (call: (authorization?: string) => unknown) => call('Bearer test-token'),
   }),
 }))
 vi.mock('@/contexts/user-login-context', () => ({

@@ -38,7 +38,7 @@ export const useGet = <T>(input:string|URL|Request, options?:UseFetchOptions) =>
     const [fetchInput, fetchInit] = onPreFetch ? onPreFetch(input, baseInit) : [input, baseInit]
     fetch(fetchInput, fetchInit)
     .then(res=>{
-      if (!res.ok) throw new Error(`Unexpected server error: ${res.status} ${res.statusText}`)
+      if (!res.ok) throw Object.assign(new Error(`Unexpected server error: ${res.status} ${res.statusText}`), {status: res.status})
       return res.json()
     })
     .then((json:T) => setData(json))
