@@ -17,16 +17,31 @@ const { validate } = getValidate(fileSchema)
 
 router.use(withDb, withS3)
 
+class ClientCancelledError extends Error {
+  constructor() {
+    super('The client cancelled the upload or disconnected')
+    this.name = 'ClientCancelledError'
+  }
+}
+
 const upload = async (s3:S3Client, Bucket:string, Key: string, req:Request, maxSize:number) => {
   // enforces the limit even when Content-Length is missing or wrong
   const limiter = sizeLimit(maxSize)
   let tooLarge:FileTooLargeError|undefined
   limiter.on('error', (e) => { if (e instanceof FileTooLargeError) tooLarge = e })
+  // pipe() doesn't end the destination if the client cancels or disconnects; without this the
+  // S3 upload would wait forever (and leave an incomplete multipart upload behind)
+  let cancelled = false
+  req.on('close', () => {
+    if (req.complete) return
+    cancelled = true
+    limiter.destroy(new ClientCancelledError())
+  })
   req.pipe(limiter)
   try {
     await new Upload({client:s3, params: {Bucket, Key, Body: limiter, ACL: "public-read", ContentType: req.headers['content-type']}}).done()
   } catch (e) {
-    throw tooLarge || e
+    throw tooLarge || (cancelled ? new ClientCancelledError() : e)
   }
 }
 
@@ -60,6 +75,10 @@ router.post('/:filepath*', checkUser('admin'), async (req:Request, res:Response)
   try {
     await upload(s3, bucket, filepath, req, maxSize)
   } catch (e) {
+    if (e instanceof ClientCancelledError) {
+      console.log(`Upload of ${filepath} was cancelled`)
+      return
+    }
     if (e instanceof FileTooLargeError) {
       res.status(413).set('Connection', 'close').send({error: tooLargeMessage()})
       return
