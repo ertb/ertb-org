@@ -4,7 +4,7 @@ import { checkUser } from '../../check-user'
 import { CopyObjectCommand, DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { Upload } from '@aws-sdk/lib-storage'
 import { withS3 } from './with-s3'
-import { Stream } from 'stream'
+import { FileTooLargeError, formatMB, getMaxUploadSize, sizeLimit } from '../../../../lib/max-upload-size'
 import { applyPatchRequest } from '../../../../lib/mongo-rest-route/apply-patch-request'
 import { ValidationError, handleValidateError } from '../../../../lib/mongo-rest-route/validation-error'
 import { getValidate } from '../../../../lib/mongo-rest-route/get-validate'
@@ -17,11 +17,17 @@ const { validate } = getValidate(fileSchema)
 
 router.use(withDb, withS3)
 
-const upload = async (s3:S3Client, Bucket:string, Key: string, req:Request) => {
-  var pass = new Stream.PassThrough()
-  const promise = new Upload({client:s3, params: {Bucket, Key, Body: pass, ACL: "public-read", ContentType: req.headers['content-type']}}).done()
-  req.pipe(pass)
-  await promise
+const upload = async (s3:S3Client, Bucket:string, Key: string, req:Request, maxSize:number) => {
+  // enforces the limit even when Content-Length is missing or wrong
+  const limiter = sizeLimit(maxSize)
+  let tooLarge:FileTooLargeError|undefined
+  limiter.on('error', (e) => { if (e instanceof FileTooLargeError) tooLarge = e })
+  req.pipe(limiter)
+  try {
+    await new Upload({client:s3, params: {Bucket, Key, Body: limiter, ACL: "public-read", ContentType: req.headers['content-type']}}).done()
+  } catch (e) {
+    throw tooLarge || e
+  }
 }
 
 const getURL = (s3:S3Client, bucket:string, filepath:string) => {
@@ -41,10 +47,23 @@ router.post('/:filepath*', checkUser('admin'), async (req:Request, res:Response)
 
   const { s3, bucket } = req
 
-  // TODO: server-side file size limit (there is a client-side maxSize in file-drop-zone.tsx)
+  const maxSize = getMaxUploadSize()
+  const tooLargeMessage = (size?:number) => size
+    ? `${filepath} is ${formatMB(size)}, which is larger than the ${formatMB(maxSize)} upload limit.`
+    : `${filepath} is larger than the ${formatMB(maxSize)} upload limit.`
+  const contentLength = Number(req.headers['content-length'])
+  if (contentLength > maxSize) {
+    res.status(413).set('Connection', 'close').send({error: tooLargeMessage(contentLength)})
+    return
+  }
+
   try {
-    await upload(s3, bucket, filepath, req)
+    await upload(s3, bucket, filepath, req, maxSize)
   } catch (e) {
+    if (e instanceof FileTooLargeError) {
+      res.status(413).set('Connection', 'close').send({error: tooLargeMessage()})
+      return
+    }
     // Express 4 doesn't catch async rejections; an uncaught one here crashes the process
     console.error(`Upload of ${filepath} to S3 failed`, e)
     res.status(502).send({error: 'Failed to store the file.'})

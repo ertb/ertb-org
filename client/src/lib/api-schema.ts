@@ -58,4 +58,6 @@ export interface ConfigResponse {
   version: string
   commit: string
   clientId: string
+  /** largest file (bytes) the server accepts for upload */
+  maxUploadSize?: number
 }

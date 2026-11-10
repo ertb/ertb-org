@@ -30,6 +30,7 @@ describe('clientConfig', () => {
     }))
     const sent = res.send.mock.calls[0][0]
     expect(typeof sent.version).toBe('string')
+    expect(sent.maxUploadSize).toBe(25 * 1024 * 1024)
   })
 
   it('should default clientId and commit to empty strings when unset', () => {

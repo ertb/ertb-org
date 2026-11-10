@@ -1,6 +1,8 @@
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
 import { FileDropZone } from "@/components/file-drop-zone/file-drop-zone";
 import { uploadFile } from "@/components/file-drop-zone/upload-file";
+import { rejectionMessage } from "@/components/file-drop-zone/rejection-message";
+import { useClientConfig } from "@/contexts/client-config-context";
 import { OptionSelect } from "@/components/option-select";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -130,6 +132,7 @@ export const Files = () => {
   const { data } = useGet<FilesResponse>(`/api/v1/files?limit=0`);
   const { toast } = useToast();
   const { profile } = useUserProfile();
+  const { maxUploadSize } = useClientConfig();
 
   const [x, setX] = useState(false);
   const updateList = () => {
@@ -148,12 +151,12 @@ export const Files = () => {
           toast.success("File uploaded", f.name);
         })
         .catch((e) => {
-          toast.error("Upload failed", f.name);
+          toast.error("Upload failed", e instanceof Error ? e.message : f.name);
           console.error(`Upload failed`, e);
         })
     );
     fileRejections.forEach((r) => {
-      toast.warn("File rejected", r.file.name);
+      toast.warn("File rejected", rejectionMessage(r, maxUploadSize));
       console.warn(`File rejected`, r);
     });
   };
@@ -170,7 +173,7 @@ export const Files = () => {
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-center">Files</h2>
-      <FileDropZone onDrop={onDrop} />
+      <FileDropZone onDrop={onDrop} maxSize={maxUploadSize} />
       <div className="flex flex-col rounded-lg border border-gray-200 mb-10">
         {data?.files.map((f) => (
           <FileItem key={f._id} file={f} onDelete={onDelete} />

@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/dialog";
 import { FileDropZone } from "@/components/file-drop-zone/file-drop-zone";
 import { uploadFile } from "@/components/file-drop-zone/upload-file";
+import { rejectionMessage } from "@/components/file-drop-zone/rejection-message";
+import { useClientConfig } from "@/contexts/client-config-context";
 import { useUserProfile } from "@/contexts/user-login-context";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
@@ -38,6 +40,7 @@ export const FileLinkPicker = ({ data, loading, selectedUrl, onSelect, onUploade
   const [open, setOpen] = useState(false);
   const [uploadOpen, setUploadOpen] = useState(false);
   const { profile } = useUserProfile();
+  const { maxUploadSize } = useClientConfig();
   const { toast } = useToast();
 
   const allMatches = useMemo(() => {
@@ -71,11 +74,11 @@ export const FileLinkPicker = ({ data, loading, selectedUrl, onSelect, onUploade
           setUploadOpen(false);
         })
         .catch((e) => {
-          toast.error("Upload failed", f.name);
+          toast.error("Upload failed", e instanceof Error ? e.message : f.name);
           console.error("Upload failed", e);
         })
     );
-    fileRejections.forEach((r) => toast.warn("File rejected", r.file.name));
+    fileRejections.forEach((r) => toast.warn("File rejected", rejectionMessage(r, maxUploadSize)));
   };
 
   return (
@@ -133,7 +136,7 @@ export const FileLinkPicker = ({ data, loading, selectedUrl, onSelect, onUploade
             <DialogTitle>Upload a file</DialogTitle>
             <DialogDescription>The uploaded file will be selected as the link automatically.</DialogDescription>
           </DialogHeader>
-          <FileDropZone onDrop={onDrop} />
+          <FileDropZone onDrop={onDrop} maxSize={maxUploadSize} />
         </DialogContent>
       </Dialog>
     </div>
