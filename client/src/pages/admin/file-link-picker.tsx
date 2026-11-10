@@ -13,7 +13,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { FileDropZone } from "@/components/file-drop-zone/file-drop-zone";
-import { uploadFile } from "@/components/file-drop-zone/upload-file";
+import { UploadCancelledError, uploadFile } from "@/components/file-drop-zone/upload-file";
+import { useUploads } from "@/components/file-drop-zone/use-uploads";
+import { UploadProgress } from "@/components/file-drop-zone/upload-progress";
 import { rejectionMessage } from "@/components/file-drop-zone/rejection-message";
 import { useClientConfig } from "@/contexts/client-config-context";
 import { useAuthRestClient } from "@/contexts/auth-rest-client-context";
@@ -41,6 +43,7 @@ export const FileLinkPicker = ({ data, loading, selectedUrl, onSelect, onUploade
   const [uploadOpen, setUploadOpen] = useState(false);
   const { withAuthRetry } = useAuthRestClient();
   const { maxUploadSize } = useClientConfig();
+  const { uploads, track } = useUploads();
   const { toast } = useToast();
 
   const allMatches = useMemo(() => {
@@ -66,7 +69,7 @@ export const FileLinkPicker = ({ data, loading, selectedUrl, onSelect, onUploade
 
   const onDrop = (acceptedFiles: File[], fileRejections: FileRejection[]) => {
     acceptedFiles.forEach((f) =>
-      withAuthRetry((authorization) => uploadFile<FilesEntry>(f, authorization))
+      track(f, (options) => withAuthRetry((authorization) => uploadFile<FilesEntry>(f, authorization, options)))
         .then((file) => {
           toast.success("File uploaded", f.name);
           selectFile(file);
@@ -74,6 +77,7 @@ export const FileLinkPicker = ({ data, loading, selectedUrl, onSelect, onUploade
           setUploadOpen(false);
         })
         .catch((e) => {
+          if (e instanceof UploadCancelledError) return;
           toast.error("Upload failed", e instanceof Error ? e.message : f.name);
           console.error("Upload failed", e);
         })
@@ -137,6 +141,7 @@ export const FileLinkPicker = ({ data, loading, selectedUrl, onSelect, onUploade
             <DialogDescription>The uploaded file will be selected as the link automatically.</DialogDescription>
           </DialogHeader>
           <FileDropZone onDrop={onDrop} maxSize={maxUploadSize} />
+          <UploadProgress uploads={uploads} />
         </DialogContent>
       </Dialog>
     </div>

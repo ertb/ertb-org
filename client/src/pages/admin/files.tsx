@@ -1,6 +1,8 @@
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
 import { FileDropZone } from "@/components/file-drop-zone/file-drop-zone";
-import { uploadFile } from "@/components/file-drop-zone/upload-file";
+import { UploadCancelledError, uploadFile } from "@/components/file-drop-zone/upload-file";
+import { useUploads } from "@/components/file-drop-zone/use-uploads";
+import { UploadProgress } from "@/components/file-drop-zone/upload-progress";
 import { rejectionMessage } from "@/components/file-drop-zone/rejection-message";
 import { useClientConfig } from "@/contexts/client-config-context";
 import { OptionSelect } from "@/components/option-select";
@@ -132,6 +134,7 @@ export const Files = () => {
   const { toast } = useToast();
   const { withAuthRetry } = useAuthRestClient();
   const { maxUploadSize } = useClientConfig();
+  const { uploads, track } = useUploads();
 
   const [x, setX] = useState(false);
   const updateList = () => {
@@ -140,7 +143,7 @@ export const Files = () => {
 
   const onDrop = (acceptedFiles: File[], fileRejections: FileRejection[]) => {
     acceptedFiles.forEach((f) =>
-      withAuthRetry((authorization) => uploadFile<FilesEntry>(f, authorization))
+      track(f, (options) => withAuthRetry((authorization) => uploadFile<FilesEntry>(f, authorization, options)))
         .then((res: FilesEntry) => {
           console.log("new file", res);
           if (data) {
@@ -150,6 +153,7 @@ export const Files = () => {
           toast.success("File uploaded", f.name);
         })
         .catch((e) => {
+          if (e instanceof UploadCancelledError) return;
           toast.error("Upload failed", e instanceof Error ? e.message : f.name);
           console.error(`Upload failed`, e);
         })
@@ -173,6 +177,7 @@ export const Files = () => {
     <div className="flex flex-col gap-4">
       <h2 className="text-center">Files</h2>
       <FileDropZone onDrop={onDrop} maxSize={maxUploadSize} />
+      <UploadProgress uploads={uploads} />
       <div className="flex flex-col rounded-lg border border-gray-200 mb-10">
         {data?.files.map((f) => (
           <FileItem key={f._id} file={f} onDelete={onDelete} />
