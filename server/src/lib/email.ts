@@ -1,5 +1,8 @@
 import nodemailer from 'nodemailer'
 
+/** the port from the URL, or the default for the protocol (465 for smtps, 25 for smtp) */
+export const smtpPort = (smtpUrl:URL) => smtpUrl.port ? parseInt(smtpUrl.port) : smtpUrl.protocol == 'smtps:' ? 465 : 25
+
 /**
  * Sends an email message using the SMTP server specified in SMTP_URL
  * @param {string} from 
@@ -9,7 +12,7 @@ import nodemailer from 'nodemailer'
  * @param {boolean} html // indicates message is HTML
  * @throws error if cannot send email via smpt server
  */
-export const sendEmail = (from:string, to:string, subject:string, message:string, html: boolean=false) => {
+export const sendEmail = async (from:string, to:string, subject:string, message:string, html: boolean=false) => {
   if (Array.isArray(to)) to = to.join(', ')
 
   if (!process.env.SMTP_URL) {
@@ -24,7 +27,7 @@ export const sendEmail = (from:string, to:string, subject:string, message:string
   // create reusable transporter object using the default SMTP transport
   const transporter = nodemailer.createTransport({
     host: smtpUrl.hostname,
-    port: parseInt(smtpUrl.port || smtpUrl.protocol == 'smtps:' ? '465' : '25'),
+    port: smtpPort(smtpUrl),
     secure: (smtpUrl.protocol == 'smtps:') || smtpUrl.port === '465',
     auth: {
       user: smtpUrl.username,

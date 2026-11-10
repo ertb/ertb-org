@@ -47,7 +47,13 @@ export const postMessage = async (req:Request, res:Response) => {
       + data.message + "\n\n\n"
       + "clientAddress: " + clientAddress
 
-      sendEmail(sendFrom, sendTo, subject, message)
+      try {
+        await sendEmail(sendFrom, sendTo, subject, message)
+        isSent = true
+      } catch (e) {
+        // must not be left unhandled: an unhandled rejection crashes the server
+        console.error('Error sending message email.', e)
+      }
     }
     if (!isSaved && !isSent) {
       res.status(500).send({error: 'Message was not recorded.'})
