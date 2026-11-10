@@ -42,7 +42,14 @@ router.post('/:filepath*', checkUser('admin'), async (req:Request, res:Response)
   const { s3, bucket } = req
 
   // TODO: server-side file size limit (there is a client-side maxSize in file-drop-zone.tsx)
-  await upload(s3, bucket, filepath, req)
+  try {
+    await upload(s3, bucket, filepath, req)
+  } catch (e) {
+    // Express 4 doesn't catch async rejections; an uncaught one here crashes the process
+    console.error(`Upload of ${filepath} to S3 failed`, e)
+    res.status(502).send({error: 'Failed to store the file.'})
+    return
+  }
   const url = getURL(s3, bucket, filepath)
 
   const found = await files.findOne({url})
