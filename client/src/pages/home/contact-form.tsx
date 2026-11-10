@@ -17,7 +17,7 @@ interface FormData {
 }
 const formSchema = z.object({
   name: z.string().min(2, {message:'Name is required'}),
-  email: z.string().email(),
+  email: z.email({message: 'A valid email address is required'}),
   phone: z.string().min(10, {message: 'Expecting 10 digits'}),
   message: z.string().min(2, {message: 'Message is required'}),
 })
@@ -41,7 +41,11 @@ export const FormInput = ({label, description, field, textarea}:FormInputProps) 
 
 export const ContactForm = () => {
   const [sending, setSending] = useState(false)
-  const form = useForm<FormData>({resolver: zodResolver(formSchema)})
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    // empty strings (not undefined) so an empty form shows the schema's own messages
+    defaultValues: {name: '', email: '', phone: '', message: ''},
+  })
 
   const onSubmit = (data: FormData) => {
     setSending(true)

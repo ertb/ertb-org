@@ -26,9 +26,6 @@ describe('ContactForm', () => {
   })
 
   it('should show validation errors and not submit when the form is empty', async () => {
-    // fields with no defaultValue submit as undefined, which fails zod's base type check
-    // ("Required") rather than reaching the .min()/.email() custom messages, which only apply
-    // once a value is already the right type.
     const user = userEvent.setup()
     server.use(http.post('/api/v1/messages', () => {
       throw new Error('should not be called')
@@ -37,8 +34,10 @@ describe('ContactForm', () => {
 
     await user.click(screen.getByRole('button', {name: 'Send Message'}))
 
-    const errors = await screen.findAllByText('Required')
-    expect(errors).toHaveLength(4)
+    expect(await screen.findByText('Name is required')).toBeInTheDocument()
+    expect(screen.getByText('A valid email address is required')).toBeInTheDocument()
+    expect(screen.getByText('Expecting 10 digits')).toBeInTheDocument()
+    expect(screen.getByText('Message is required')).toBeInTheDocument()
   })
 
   it('should show the custom min-length message once a too-short value is entered', async () => {
