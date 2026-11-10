@@ -70,7 +70,7 @@ describe('userprofile', () => {
     expect(res.body.userinfo.email).toBe('person@example.com')
     expect(res.body.authorization).toMatch(/^Bearer /)
 
-    const payload = await verifyToken<{userId: string}>(res.body.authorization.split(' ')[1])
+    const payload = await verifyToken<{userId: string}>(db, res.body.authorization.split(' ')[1])
     expect(payload?.userId).toBe(res.body._id)
   })
 

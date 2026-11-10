@@ -27,7 +27,7 @@ export const checkUser = (role?:string) => async (req: Request, res: Response, n
   }
   let payload:HasUserId
   try {
-    payload = await verifyToken<HasUserId>(jwt)
+    payload = await verifyToken<HasUserId>(req.db, jwt)
   } catch (e) {
     console.debug(e)
     res.status(401).send({error: 'Could not verify bearer token. User should sign in again.'})

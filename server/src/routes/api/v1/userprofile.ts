@@ -67,7 +67,7 @@ export const userprofile = async (req:Request, res:Response) => {
       res.status(500).send({error: 'Could not find or create user'})
       return
     }
-    const {token, expires} = await signToken({userId: user?._id})
+    const {token, expires} = await signToken(req.db, {userId: user?._id})
     res.send({...user, authorization: `Bearer ${token}`, expires})
   })
   .catch((e:unknown)=>{

@@ -4,11 +4,8 @@ dotenv.config()
 import express, { NextFunction, Request, Response } from 'express'
 import morgan from 'morgan'
 import { v1 } from './routes/api/v1'
-import { signingKeyRotation } from './routes/api/auth-sign-verify'
 import { ErrorHandler } from './lib/http-error'
 import path from 'path'
-
-signingKeyRotation(process.env.JWKS_ROTATION_TIME)
 
 const app = express()
 

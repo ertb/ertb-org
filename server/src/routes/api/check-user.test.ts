@@ -38,7 +38,7 @@ describe('checkUser', () => {
   }
 
   const authHeader = async (userId: ObjectId | string) => {
-    const {token} = await signToken({userId: userId.toString()})
+    const {token} = await signToken(db, {userId: userId.toString()})
     return `Bearer ${token}`
   }
 
