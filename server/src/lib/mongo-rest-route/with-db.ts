@@ -18,12 +18,13 @@ export const withDb = (req: Request, res: Response, next?: NextFunction) => {
   if (!mongoURL) throw new Error("MONGO_URL not set")
 
   try {
-    console.log('Connecting to', mongoURL, '...')
+    const safeURL = mongoURL.replace(/\/\/[^@\/]*@/, '//***@')
+    console.log('Connecting to', safeURL, '...')
     const start = Date.now()
     const client = clients[mongoURL] || new MongoClient(mongoURL)
     clients[mongoURL] = client
     const db = client.db()
-    console.log('Connected to', mongoURL, 'in', `${(Date.now()-start)/1000} seconds`)
+    console.log('Connected to', safeURL, 'in', `${(Date.now()-start)/1000} seconds`)
 
     req.db = db
   } catch (e) {
